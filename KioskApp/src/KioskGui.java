@@ -64,7 +64,7 @@ public class KioskGui extends JApplet{
 		 {
 			 if( e.getSource() == proceed ) 
 			 {
-				 
+				 //add listener
 				
 			 }
 		 }
