@@ -5,6 +5,7 @@ public class Flightrun {
 		// TODO Auto-generated method stub
 		AirlineManager a=new AirlineManager();
 		a.run();
+		gui g=new gui(a.getlist());
 		a.generateReport();
 
 	}

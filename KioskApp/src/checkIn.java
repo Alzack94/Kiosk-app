@@ -59,7 +59,7 @@ public Baggage getBaggage()
 
 public String checkInDetails()
 {
-	return "Passenger Name is : "+passenger.getPaxName().getLastName() +"\nBooking Reference is "+passenger.getBookingRef()+"Excess Weight is "+Double.toString(excessWeight)+"\nExcess Volume is "+Double.toString(excessVolume)+ "\nExcess Fee is is"+ Double.toString(excessFee);
+	return "Passenger Name is : "+passenger.getPaxName().getLastName() +"\nBooking Reference is "+passenger.getBookingRef()+"\nExcess Weight is "+Double.toString(excessWeight)+"\nExcess Volume is "+Double.toString(excessVolume)+ "\nExcess Fee is is"+ Double.toString(getExcessFee());
 	
 }
 
@@ -75,21 +75,18 @@ public double  getExcessFee() {
 	return excessFee;
 }
 
-public double getExcess()
-{
-	return excessFee;
-}
+
 public void calculateExcess()
 {
-	double b=baggage.getBagLength()*baggage.getBagBreadth()*baggage.getBagHeight() ;
-	if(b>flight.getMaxBagVolume())
-	excessVolume=b-flight.getMaxBagVolume();
+	double b=baggage.getBagVolume();
+	if(b>(flight.getMaxBagVolume()/flight.getMaxNumOfPax()))
+	excessVolume=b-(flight.getMaxBagVolume()/flight.getMaxNumOfPax());
 	else
 		excessVolume=0;
 	
 	double c=baggage.getBagWeight() ;
-	if(c>flight.getMaxBagWeight())
-	excessWeight=c-flight.getMaxBagWeight();
+	if(c>(flight.getMaxBagWeight()/flight.getMaxNumOfPax()))
+	excessWeight=c-(flight.getMaxBagWeight()/flight.getMaxNumOfPax());
 	else
 		excessWeight=0;
 }
@@ -108,9 +105,10 @@ public Double getexcessVolume()
 		return 0.0 ;
 	else return excessVolume ;
 	
-}
+}}
 
-public boolean validBookingReference()
+
+/*public boolean validBookingReference()
 {
 	String br=passenger.getBookingRef();
 	String f=flight.getFlightCode();
@@ -118,26 +116,24 @@ public boolean validBookingReference()
 	int j=1;
 	int size=br.length();
 	
-	if(size>12||size<12)
-		return false ;
-	else 
-		{
 				for(int i=0;i<8;i++)
 						{
 								if(br.charAt(i)==pass.charAt(i))
-											j=1;
+									{System.out.println("True");
+											j=1;}
 								else
 										return false;
 						}	
-				for(int k=8;k<12;k++)
+				for(int k=8;k<size;k++)
 						{
 								if(br.charAt(k)==f.charAt(k))
-										j=1;
+								{System.out.println("True");
+								j=1;}
 								else
 										return false;
 						}
 		return true;
-}}
+}}*/
 
 
 
@@ -146,4 +142,4 @@ public boolean validBookingReference()
 
 
 
-}
+

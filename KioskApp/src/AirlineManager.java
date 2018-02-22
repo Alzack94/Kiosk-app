@@ -19,10 +19,10 @@ public class AirlineManager {
 	        //print a report of all the check-ins
 	        public void generateReport()
 	        {
-	        if(allacc.CheckInFinish()==true)
+	  //   if(allacc.CheckInFinish()==true)
 			System.out.println(allacc.getTableOfCheckIns());
-	        else
-	        	System.out.println("CheckIn Incomplete,Cannot produce report");
+	   //   else
+	   //	System.out.println("CheckIn Incomplete,Cannot produce report");
 			}
 		
 

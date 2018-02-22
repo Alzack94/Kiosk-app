@@ -264,8 +264,8 @@ if(s.getFlightCode().equals(c))
 	System.out.println("Name"+a[0]);
 	a[1]= s.getDestination();
 	a[2]=Integer.toString(s.getMaxNumOfPax());
-	a[3]=Double.toString(s.getMaxBagWeight());
-	a[4]=Double.toString(s.getMaxBagVolume());
+	a[4]=Double.toString(s.getMaxBagWeight());
+	a[3]=Double.toString(s.getMaxBagVolume());
 	return a;
 	}//else {return a;}
 }
@@ -276,7 +276,14 @@ return a;
 
 public void CheckInNow(String c,int l,int h,int b,double w)
 {for (checkIn s : chks)
+{try
 {
+if(c.equals(s.getPassenger().getBookingRef()))
+{
+if('Y'==s.getCheckedIn())
+throw new alreadyCheckedInException(c);
+}
+
 	if(c.equals(s.getPassenger().getBookingRef()))
 	{
 		s.setCheckedIn('Y');
@@ -284,28 +291,48 @@ public void CheckInNow(String c,int l,int h,int b,double w)
 		s.getBaggage().setBagLength(l);
 		s.getBaggage().setBagHeight(h);
 		s.getBaggage().setBagWeight(w);
+		
+		s.calculateExcess();
 		s.getexcessVolume();
 		s.getexcessWeight();
-		s.calculateExcess();
+		s.getExcessFee();
 	}
-	System.out.print("Excess fees:"+s.getexcessVolume());
-	System.out.print("Excess fees:"+s.getexcessWeight());
 }
+catch(alreadyCheckedInException e)
+{
+       String message = e.getMessage() + "\nDetails not added";
+        System.out.println(message);
+}}
 	
 }
 
+public boolean checkstatus(String a)
+{String t;
+	for (checkIn s : chks)
+	{t=s.getPassenger().getBookingRef();
+		if(a.equals(t)==true)
+			if(s.getCheckedIn()=='Y')
+					return true;
+				}
+	return false;
+}
 //check Booking Reference in GUI
 //Write into Label according to boolean returned
 
 
-public boolean CheckBookingReference(String c)
-{ boolean d=false;
+public String CheckBookingReference(String c)
+{ String t;
 	for (checkIn s : chks)
-	{if(c.equals(s.getPassenger().getBookingRef()))
-		d=s. validBookingReference();
-		return d;
+	{t=s.getPassenger().getBookingRef();
+		if(c.equals(t)==true)
+				{return "Booking Referenece is Valid";
+	
+				}
+	
 	}
-	return d;
+	return "Booking Reference is Invalid";
+	
+
 }
 
 //Display details in GUI 
