@@ -1,4 +1,3 @@
-package airportCheckIn;
 import java.util.Comparator;
 
 /**
