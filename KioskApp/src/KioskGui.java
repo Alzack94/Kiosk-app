@@ -62,19 +62,29 @@ public class KioskGui extends JApplet{
  		
 		public void actionPerformed(ActionEvent e)		 
 		 {
+			 
 			 if( e.getSource() == proceed ) 
 			 {
-				 runCC();
+				 String c = bookingRef.getText();
+				 int l = Integer.parseInt(bagLength.getText());
+				 int h = Integer.parseInt(bagHeight.getText());
+				 int b = Integer.parseInt(bagWidth.getText());
+				 double w =Double.parseDouble(bagWeight.getText());
+				 AirlinesCollection cin = new AirlinesCollection();
+				 cin.CheckInNow(c,l,h,b,w);
+				 //getCC(c,l,h,b,w);
 				
 			 }
 		 }
 			
 		 
 	 	}
-	public void runCC()
+	public void getCC(String c,int l,int h,int b,double w)
 	{
-		AirlineManager amo = new AirlineManager();
-	    amo.run();
+		 AirlinesCollection cin = new AirlinesCollection();
+		cin.CheckInNow(c,l,h,b,w);
+		System.out.println(c);
+		System.out.println(w);
 	}
 
 }

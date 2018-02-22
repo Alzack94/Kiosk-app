@@ -42,7 +42,7 @@ public class AirlinesCollection {
 	
 	public void populateCheckIns() {
 
-		readFile1("C:\\Users\\C Ram\\eclipse-workspace\\Project1\\PaxBookingFile1.csv");
+		readFile1("PaxBookingFile1.csv");
 		System.out.println("Done 1");
 		
 		}
@@ -55,7 +55,7 @@ public class AirlinesCollection {
 	 */
 	public void populateFlights() {
 
-		readFile2("C:\\Users\\C Ram\\eclipse-workspace\\Project1\\FlightFile1.csv");
+		readFile2("FlightFile1.csv");
 		System.out.println("Done 1");
 		
 		}
@@ -79,7 +79,7 @@ public class AirlinesCollection {
 			report += String.format("%-6s", s.getCheckedIn());
 			report += "\n";
 		}
-		writeToFile("C:\\Users\\C Ram\\eclipse-workspace\\Project1\\report.txt",report);
+		writeToFile("report.txt",report);
 		return report;
 	}
 	
@@ -284,8 +284,52 @@ public void CheckInNow(String c,int l,int h,int b,double w)
 		s.getBaggage().setBagLength(l);
 		s.getBaggage().setBagHeight(h);
 		s.getBaggage().setBagWeight(w);
+		s.getexcessVolume();
+		s.getexcessWeight();
+		s.calculateExcess();
 	}
+	System.out.print("Excess fees:"+s.getexcessVolume());
+	System.out.print("Excess fees:"+s.getexcessWeight());
 }
 	
 }
+
+//check Booking Reference in GUI
+//Write into Label according to boolean returned
+
+
+public boolean CheckBookingReference(String c)
+{ boolean d=false;
+	for (checkIn s : chks)
+	{if(c.equals(s.getPassenger().getBookingRef()))
+		d=s. validBookingReference();
+		return d;
+	}
+	return d;
+}
+
+//Display details in GUI 
+//Write String returned in Label
+
+public String Details(String c) 
+{for (checkIn s : chks)
+{if(c.equals(s.getPassenger().getBookingRef()))
+	return s.checkInDetails();
+}
+	return "Passsenger Not Found";
+}
+
+//Check if CheckIns are over in Manager class
+
+public boolean CheckInFinish()
+{
+	for (checkIn s : chks)
+{
+	if(s.getCheckedIn()!='Y')
+	return false;
+}
+	return true;
+	
+}
+
 }

@@ -59,7 +59,7 @@ public Baggage getBaggage()
 
 public String checkInDetails()
 {
-	return "Passenger Name is : "+passenger.getPaxName().getLastName() +"\nBooking Reference is "+passenger.getBookingRef()+"\nExcess Fee is is"+ Double.toString(excessFee);
+	return "Passenger Name is : "+passenger.getPaxName().getLastName() +"\nBooking Reference is "+passenger.getBookingRef()+"Excess Weight is "+Double.toString(excessWeight)+"\nExcess Volume is "+Double.toString(excessVolume)+ "\nExcess Fee is is"+ Double.toString(excessFee);
 	
 }
 
@@ -113,44 +113,31 @@ public Double getexcessVolume()
 public boolean validBookingReference()
 {
 	String br=passenger.getBookingRef();
-	String n=passenger.getPaxName().getLastName();
 	String f=flight.getFlightCode();
 	String pass=passenger.getPassportNum();
-	int psize=pass.length();
 	int j=1;
 	int size=br.length();
 	
-	if(size>10||size<10)
-		return true ;
+	if(size>12||size<12)
+		return false ;
 	else 
-		{for(int i=0;i<4;i++)
 		{
-			if(br.charAt(i)==f.charAt(i))
-				j=1;
-			else
-				j=0;
-		}
-	for(int k=3;k<7;k++)
-	{
-		if(br.charAt(k)==n.charAt(k))
-			j=1;
-		else
-			j=0;
-	}
-	for(int l=7;l<10;l++)
-	{
-		if(br.charAt(l)==pass.charAt(psize-(l-7)))
-			j=1;
-		else
-			j=0;
-	}
-	if(j==1)
+				for(int i=0;i<8;i++)
+						{
+								if(br.charAt(i)==pass.charAt(i))
+											j=1;
+								else
+										return false;
+						}	
+				for(int k=8;k<12;k++)
+						{
+								if(br.charAt(k)==f.charAt(k))
+										j=1;
+								else
+										return false;
+						}
 		return true;
-	else
-		return false;
-		}
-	
-}
+}}
 
 
 
