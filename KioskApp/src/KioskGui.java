@@ -64,12 +64,17 @@ public class KioskGui extends JApplet{
 		 {
 			 if( e.getSource() == proceed ) 
 			 {
-				 
+				 runCC();
 				
 			 }
 		 }
 			
 		 
 	 	}
+	public void runCC()
+	{
+		AirlineManager amo = new AirlineManager();
+	    amo.run();
+	}
 
 }
