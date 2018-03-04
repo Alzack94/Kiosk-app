@@ -1,10 +1,12 @@
-//package junitTesting;
-
+package jUnitTesting;
 import static org.junit.Assert.*;
 import org.junit.Test;
-//import airportCheckIn.*;
+import airportCheckIn.*;
 
-
+/**
+ * This JUnit Test class is used to test the Flight class
+ * @author Suraj Sivaprasad
+ */
 public class TestFlight 
 {
 	/**

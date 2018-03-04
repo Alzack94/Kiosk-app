@@ -1,3 +1,4 @@
+package airportCheckIn;
 
 /**
  * Passenger class is used to represent each individual Passenger.

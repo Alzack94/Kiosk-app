@@ -1,3 +1,4 @@
+package airportCheckIn;
 
 /**
  * Flight class is used to represent details of the Flight.
@@ -13,6 +14,8 @@ public class Flight implements Comparable<Flight>
 	private double maxBagVolume;	//Maximum Baggage Volume of the flight
 	private double maxBagWeight;	//Maximum Baggage Weight of the flight
 	private String destination; 
+	private static final double WEIGHTPENALTY = 50.00;  //Excess Baggage Weight Penalty fees in USD per KG
+	private static final double VOLUMEPENALTY = 1.50;	//Excess Baggage Volume Penalty fees in USD per CM3
 
 	/**Constructor for creating a Flight Object with the parameter values.
 	 * 
@@ -45,7 +48,11 @@ public class Flight implements Comparable<Flight>
 	public double getMaxBagWeight()
 	{	return maxBagWeight;	}
 	public String getDestination()
-	{	return destination;	}	
+	{	return destination;	}
+	public double getWeightPenalty() 
+	{	return WEIGHTPENALTY;	}
+	public double getVolumePenalty() 
+	{	return VOLUMEPENALTY;	}	
 	
 	//The set methods for the Flight Class
 	public void setFlightCode(String fc)
@@ -70,7 +77,7 @@ public class Flight implements Comparable<Flight>
 	 */
 	public int compareTo(Flight other)
 	{
-		return airlineName.compareTo(other.getAirlineName());
+		return flightCode.compareTo(other.getFlightCode());
 	} 
 
 	/**
@@ -123,24 +130,4 @@ public class Flight implements Comparable<Flight>
 		String h="------------------------------------------------------------------------------------\n";
 		return h;
 	}
-
-	public Object getCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String getFlightName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public double getWeightPenalty() {
-		// TODO Auto-generated method stub
-		return 1000;
-	}
-
-	public double getVolumePenalty() {
-		// TODO Auto-generated method stub
-		return 200;
-	}	
 }

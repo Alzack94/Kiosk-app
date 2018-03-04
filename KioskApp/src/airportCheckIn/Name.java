@@ -1,3 +1,4 @@
+package airportCheckIn;
 
 /**
  * Name Class to hold first, middle and last name

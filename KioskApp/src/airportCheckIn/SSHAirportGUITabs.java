@@ -1,32 +1,27 @@
+package airportCheckIn;
 import java.awt.event.ActionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-
-
 import javax.swing.*;
 
 /**
  * 
- * @author Sreepratha
+ * @author Sreepratha Ramasubramanian
  *
  */
 
-
-
-
-
-public class tabs extends JPanel implements ActionListener {
+public class SSHAirportGUITabs extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
-	AirlinesCollection a;
+	SSHAirportCollection a;
 	JLabel nameLabel, IDLabel, BaggageL, BaggageH, BaggageW,BaggageB,optionsLabel, aboutLabel;
 	JTextField nameText, bookingText,BaggageLT, BaggageHT, BaggageWT,BaggageBT,optionsLabelT, aboutLabelT;
-	
-	
+
+
 	JTextArea aboutYou,aboutYou1;
 	JButton bookbut,searchbut,reset,summary;
-	
-	
-	public tabs(AirlinesCollection b) {
+
+
+	public SSHAirportGUITabs(SSHAirportCollection b) {
 		a=b;
 		//gridbag layout assigned 
 		this.setLayout(new GridBagLayout());
@@ -59,43 +54,41 @@ public class tabs extends JPanel implements ActionListener {
 		bookbut.addActionListener(this);
 		addComp(this, bookbut, 3, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);
 
-		
-		
-		
-		
+
+
+
+
 		aboutYou = new JTextArea(2,10);
 		aboutYou1 = new JTextArea(10, 40);
-		
+
 		// Set the default text for the text area
 		//changed
 		aboutYou.setText("Hello");
 		aboutYou1.setText("Hello");
-		
+
 		// If text doesn't fit on a line, jump to the next
-		
+
 		aboutYou.setLineWrap(true);
 		aboutYou1.setLineWrap(true);
-		
-		
+
+
 		// Makes sure that words stay intact if a line wrap occurs
-		
+
 		aboutYou.setWrapStyleWord(true);
 		aboutYou1.setWrapStyleWord(true);
-		
+
 		// Adds scroll bars to the text area ----------
-		
+
 		JScrollPane scrollbar1 = new JScrollPane(aboutYou, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		
+
 		addComp(this, scrollbar1, 5, 2, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);
-		
-JScrollPane scrollbar2 = new JScrollPane(aboutYou1, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		
+
+		JScrollPane scrollbar2 = new JScrollPane(aboutYou1, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
 		addComp(this, scrollbar2, 5,6, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);
-		
-		
+
 		setVisible(true);
-		
-		
+
 	}
 	/**
 	 * 
@@ -112,42 +105,35 @@ JScrollPane scrollbar2 = new JScrollPane(aboutYou1, JScrollPane.VERTICAL_SCROLLB
 		gridConstraints.insets = new Insets(5,5,5,5);
 		gridConstraints.anchor = place;
 		gridConstraints.fill = stretch;
-		
+
 		thePanel.add(comp, gridConstraints);
 	}
 	/*
 	 * action listeners
 	 */
 	public void actionPerformed(ActionEvent e) 
-    { 
-//		System.out.println(e.getSource());
+	{ 
+		//		System.out.println(e.getSource());
 		if (e.getSource()==bookbut) {
 			System.out.println("Check-In");
 			checkIn();
 		};
-		
-		
-				
-		
-    }
-	public void checkIn() {
+
+	}
+	public void checkIn() 
+	{
 		String c=bookingText.getText();
 		int l=Integer.parseInt(BaggageLT.getText());
 		int b=Integer.parseInt(BaggageBT.getText());
 		int h=Integer.parseInt(BaggageHT.getText());
 		double w=Double.parseDouble(BaggageWT.getText());
-		
+
 		a.CheckInNow(c,l,h,b,w);
-		aboutYou.setText(a.CheckBookingReference(c));
-		
-			aboutYou1.setText(a.Details(bookingText.getText()));
-	
+		aboutYou.setText(a.validBookingRefFromFile(c));
+
+		aboutYou1.setText(a.findCheckInDetailsByBookRef(bookingText.getText()));
+
 	}
-	
-   
-		
-    	
-   
-   
-//   
+
+	//   
 }

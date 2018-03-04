@@ -1,3 +1,4 @@
+package airportCheckIn;
 
 /**
  * Baggage class is used to represent individual luggage of the passengers.
@@ -6,7 +7,6 @@
 public class Baggage 
 {
 	//instance variables
-
 	private double bagLength;
 	private double bagBreadth;
 	private double bagHeight;
@@ -14,20 +14,12 @@ public class Baggage
 
 	/**Constructor for creating a Baggage Object with the parameter values.
 	 * 
-	 * @param bid	ID of the Bag
 	 * @param bl	Length of the Bag
 	 * @param bb	Breadth of the Bag
 	 * @param bh	Height of the Bag
 	 * @param bw	Weight of the Bag
 	 */
-	public Baggage()
-	{
-		bagLength=0;
-		bagBreadth=0;
-		 bagHeight=0;
-		 bagWeight=0;
-	}
-	public Baggage( double bl, double bb, double bh, double bw)
+	public Baggage(double bl, double bb, double bh, double bw)
 	{
 		if(bl<0.0 || bb<0.0 || bh<0.0)
 			throw new IllegalArgumentException("Negative values for bag dimensions are invalid!");
@@ -41,7 +33,6 @@ public class Baggage
 	}
 	
 	//The get methods for the Baggage Class
-
 	public double getBagLength()
 	{	return bagLength;	}
 	public double getBagBreadth()
@@ -51,8 +42,7 @@ public class Baggage
 	public double getBagWeight()
 	{	return bagWeight;	}
 	
-	//The set methods for the Baggage Class
-		
+	//The set methods for the Baggage Class	
 	public void setBagLength(double bl)
 	{	bagLength=bl;	}
 	public void setBagBreadth(double bb)
