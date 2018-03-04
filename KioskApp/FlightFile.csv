@@ -1,3 +1,4 @@
+FlightCode,DestinationAirport,Carrier,MaxNumOfPax,MaxBagWeightKG,MaxBagVolumeCM3
 AA956,London Heathrow Airport,American Airlines,99,4554,5889015
 AB315,Hamburg Airport,Air Berlin,218,8720,13354244
 AD748,Guararapes Gilberto Freyre International Airport,Azul,125,5250,6347375
