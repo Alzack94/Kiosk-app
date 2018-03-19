@@ -79,15 +79,15 @@ public class CheckInDesk  implements Runnable
 		System.out.println("Starting Check-In Thread "+deskID);
 		int count=0;
 		while (count<5) 
-		{
-		try {count++;
+		{count++;
+		try {
 				if (deskID/2 == 0) 
 				{  
 					//Introduce variation in sleeping pattern, so CheckIns have different times
 					Thread.sleep(waitTime);
 				}
 
-				CheckIn c=airport.getFrontOfQueue();
+				CheckIn c=airport.getFrontOfQueue(deskID);
 				if(c==null)
 				{
 					System.out.println("CheckIn Desk is inactive because there are no Passengers in Queue");
@@ -95,7 +95,7 @@ public class CheckInDesk  implements Runnable
 				else
 				{
 					String bRef=c.getPassenger().getBookingRef();
-					airport.CheckInNowStage2(bRef);
+					airport.CheckInNowStage2(bRef,deskID);
 					System.out.println(printDetails(c));
 					
 				}

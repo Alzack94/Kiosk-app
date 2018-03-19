@@ -408,14 +408,14 @@ public class AirportModel extends Observable implements  Runnable
 	 * This method is used to complete a check-in for Stage 2.
 	 * @param bRef 	Booking Reference
 	 */
-	public void CheckInNowStage2(String bRef)
-	{
+	public void CheckInNowStage2(String bRef,int a)
+	{LogSingleton ls=LogSingleton.getInstance();
 		for (CheckIn c : chks)
 		{
 			try
 			{
 				if(bRef.equals(c.getPassenger().getBookingRef()))
-				{
+				{ls.CheckedIn(c.getPassenger(),a);
 					if(c.getCheckedIn())	//If the passenger has already completed the check-in
 					throw new AlreadyCheckedInException(bRef);
 				}
@@ -444,7 +444,7 @@ public class AirportModel extends Observable implements  Runnable
 	 * @param w		Bag Weight
 	 */
 	public void CheckInNowStage1(String bRef, int l, int h, int b, double w)
-	{
+	{LogSingleton ls=LogSingleton.getInstance();
 		for (CheckIn c : chks)
 		{
 			try
@@ -456,7 +456,7 @@ public class AirportModel extends Observable implements  Runnable
 				}
 
 				if(bRef.equals(c.getPassenger().getBookingRef()))
-				{
+				{ls.CheckedIn(c.getPassenger(),1);
 					c.setCheckedIn(true);
 					//Set baggage dimensions that were entered through GUI
 					c.getBaggage().setBagBreadth(b);
@@ -561,9 +561,9 @@ public class AirportModel extends Observable implements  Runnable
 
 		while(count>=0)
 		{
-		/*	try 
-			{*/
-				//Thread.sleep(3000);	//Sleep for 3 secs
+			try 
+			{
+				Thread.sleep(400);	//Sleep for 3 secs
 				CheckIn c = addOneToQueue();
 				q.add(c);
 				if(q.size()==20)
@@ -574,12 +574,12 @@ public class AirportModel extends Observable implements  Runnable
 				cidThreads[2] = new Thread(d);
 				cidThreads[2].start();
 				System.out.println("New Desk Added");}
-			//	}
-			//}
-		/*	catch (Exception e) 
+				}
+			
+			catch (Exception e) 
 			{
 				System.out.println("Auction thread exception" + e.getStackTrace());
-			}*/
+			}
 			count--;
 		}System.out.println("Time Up");
 				
@@ -594,8 +594,8 @@ public class AirportModel extends Observable implements  Runnable
 	}
 	
 
-	public synchronized CheckIn getFrontOfQueue()
-	{
+	public synchronized CheckIn getFrontOfQueue(int a)
+	{LogSingleton ls=LogSingleton.getInstance();
 		if(q.isEmpty())
 		{
 			
@@ -607,7 +607,7 @@ public class AirportModel extends Observable implements  Runnable
 		else
 		{
 			CheckIn c=q.poll();
-			
+			ls.LeaveQueue(c.getPassenger(),a);
 			setChanged();
 			notifyObservers();
 			clearChanged();
@@ -623,6 +623,8 @@ public class AirportModel extends Observable implements  Runnable
 	{
 		//int size = chks.size();
 		//int item = new Random().nextInt(size);
+		LogSingleton ls=LogSingleton.getInstance();
+		
 		for(CheckIn c : chks)
 		{
 		    if (c.getCheckedIn()==false && c.getInQueue() == false)
@@ -641,7 +643,7 @@ public class AirportModel extends Observable implements  Runnable
 				
 		    	//Report to standard output
 				System.out.println("\n"+c.getPassenger().getPaxName().getFullName()+" has been added to the queue");
-
+				ls.EnterQueue(c.getPassenger());
 				//Update GUI View display
 				System.out.println("Changing display");
 				

@@ -112,7 +112,7 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 
 		//The queuePanel is used to display the queue information
 		JPanel queuePanel = new JPanel();	
-		displayQueue = new JTextArea(8,110);		//10 row cells and 80 column cells
+		displayQueue = new JTextArea(5,110);		//10 row cells and 80 column cells
 		displayQueue.setFont(new Font (Font.MONOSPACED,Font.PLAIN,16));		//Monospaced font for good formatting
 		displayQueue.setEditable(false);
 		scrollQueue = new JScrollPane(displayQueue);	//The display area can be scrolled.
@@ -148,7 +148,7 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 
 		//The flightPanel is used to display the queue information
 		JPanel flightPanel  = new JPanel();	
-		displayFlight = new JTextArea(10,110);		//10 row cells and 80 column cells 
+		displayFlight = new JTextArea(6,110);		//10 row cells and 80 column cells 
 		displayFlight.setFont(new Font (Font.MONOSPACED,Font.PLAIN,16));		//Monospaced font for good formatting
 		displayFlight.setEditable(false);
 		scrollFlight = new JScrollPane(displayFlight);	//The display area can be scrolled.
@@ -190,6 +190,10 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 			JOptionPane.showMessageDialog(this,closeLabel,"GoodBye From Sree Suraj and Hari Airport!",JOptionPane.INFORMATION_MESSAGE);
 			setVisible(false);
 			this.dispose();
+			LogSingleton ls=LogSingleton.getInstance();
+			System.out.println(ls.getLog());
+			String logReport=ls.getLog();
+			ls.writeToFile("LogReport.txt",logReport);
 			System.exit(0);
 		}
 	}  
@@ -220,7 +224,7 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 			{
 				String report = cidList.get(i).getReport() ;
 				this.checkInDesks[i].setText(report);	
-				if (report.contains("CLOSING"))
+				if (report.contains("CLOSING CHECK-IN DESK NUMBER"))
 				{
 					checkInDesks[i].setBackground(Color.RED);
 					checkInDesks[i].setForeground(Color.WHITE);
@@ -235,7 +239,7 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 			{
 				String report = cidList.get(i).getReport() ;
 				this.checkInDesks[i].setText(report);	
-				if (report.contains("CLOSING"))
+				if (report.contains("CLOSING CHECK-IN DESK NUMBER"))
 				{
 					checkInDesks[i].setBackground(Color.RED);
 					checkInDesks[i].setForeground(Color.WHITE);

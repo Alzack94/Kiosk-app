@@ -8,5 +8,6 @@ public class AirportDemo
 		AirportGUIView view  = new AirportGUIView(model);
 		AirportController controller = new AirportController(model, view);   
 		view.setVisible(true);
+		
 	}
 }
