@@ -75,6 +75,7 @@ public class CheckInDesk  implements Runnable
 	public void run() 
 	{
 		//Keep processing until airport time is not finished
+		System.out.println("Starting Check-In thread"+deskID);
 		int count=0;
 		while (count<5) 
 		{

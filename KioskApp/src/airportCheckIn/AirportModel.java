@@ -22,7 +22,7 @@ public class AirportModel extends Observable implements  Runnable
 	private CheckInDeskList cidList;		//The list of CheckIn Desks 
 	private Thread [] cidThreads;			//Threads for handling CheckIn Desks
 	private AirportGUIView view;			//The GUI class - View under MVC pattern
-
+	private static int num=2;
 	/**
 	 * Constructor to creates list of customers
 	 */
@@ -539,25 +539,34 @@ public class AirportModel extends Observable implements  Runnable
 		System.out.println("Starting Queue Thread");
 		int count=100;
 
-		cidThreads = new Thread[cidList.getSize()];
-		for (int i = 0; i < cidList.getSize(); i++)
-		{System.out.println("Starting thread"+Integer.toString(i));
+		cidThreads = new Thread[3];
+		for (int i = 0; i < 2; i++)
+		{System.out.println("Starting Queue thread"+Integer.toString(i));
 			cidThreads[i] = new Thread(cidList.get(i));
 			cidThreads[i].start();
 		}
 
 		while(count>=0)
 		{
-			try 
-			{
+		/*	try 
+			{*/
 				//Thread.sleep(3000);	//Sleep for 3 secs
 				CheckIn c = addOneToQueue();
 				q.add(c);
-			}
-			catch (Exception e) 
+				if(q.size()==20)
+				{num=3;
+				System.out.println("Adding new desk");
+				CheckInDesk d = new CheckInDesk (3, this);
+				cidList.add(d);
+				cidThreads[2] = new Thread(d);
+				cidThreads[2].start();
+				System.out.println("New Desk Added");}
+			//	}
+			//}
+		/*	catch (Exception e) 
 			{
 				System.out.println("Auction thread exception" + e.getStackTrace());
-			}
+			}*/
 			count--;
 		}System.out.println("Time Up");
 				
@@ -635,5 +644,19 @@ public class AirportModel extends Observable implements  Runnable
 		setChanged();
 		notifyObservers();
 		clearChanged();
+	}
+	
+	public void addDesk()
+	{num=3;
+		System.out.println("Adding new desk");
+		CheckInDesk c = new CheckInDesk (3, this);
+		cidList.add(c);
+		
+		
+	}
+	
+	public int getnum()
+	{
+		return num;
 	}
 }

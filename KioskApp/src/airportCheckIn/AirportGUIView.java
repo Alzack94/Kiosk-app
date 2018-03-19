@@ -20,7 +20,10 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 	private AirportModel airport;
 	private CheckInDeskList cidList;				//List of checkIns Desks
 	private int numDesks;
-
+	private GridLayout gr;
+	private JPanel cidPanel;
+	private int count=0;
+	private int num=2;
 	//GUI Components
 	JButton proceed, close;
 	JScrollPane scrollList, scrollNorth, scrollQueue, scrollFlight, scrollSouth;
@@ -49,7 +52,7 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 		setLocation (20,10);								//(20,10) should be near the Top-Left Corner 
 		setDefaultCloseOperation(AirportGUIView.DO_NOTHING_ON_CLOSE);	//disable default close action
 		setupNorthPanel();
-		setupCenterPanel();
+		setupCenterPanel(2);
 		setupSouthPanel();
 		pack();				//pack contents to fit
 		setVisible(true);	//Set it as Visible
@@ -59,12 +62,12 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 	/**
 	 * Method to set up the Center panel of the GUI, which contains live information about CheckIn Desks
 	 */
-	private void setupCenterPanel()
+	private void setupCenterPanel(int nc)
 	{
-
-		JPanel cidPanel = new JPanel(new GridLayout (1,2));
-		checkInDesks = new JTextArea [numDesks];
-		for (int i = 0; i < numDesks; i++) 
+		gr=new GridLayout (1,nc);
+		cidPanel = new JPanel(gr);
+		checkInDesks = new JTextArea [nc];
+		for (int i = 0; i < nc; i++) 
 		{
 			checkInDesks[i]= new JTextArea(20,40);
 			checkInDesks[i].setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
@@ -193,10 +196,23 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
     //possibly investigate SwingWorker
     //for each customer, store bidlist into correct panel
     public synchronized void update(Observable o, Object args) 
-    {System.out.println("Calling update");
+    {count++;
+    
+    	System.out.println("Calling update");
     displayQueue.setText(airport.getQ());
+   
     displayFlight.setText(airport.printFlightDetails());
-    	for (int i = 0; i < numDesks; i++) 
+    if(airport.getnum()==3)
+    {System.out.println("Spliting gui");
+    	cidPanel.removeAll();
+    	validate();
+    	setupCenterPanel(3);
+    	validate();
+    	num=3;
+    }
+    if(num==2)	
+    {
+    for (int i = 0; i < 2; i++) 
     	{
     		String report = cidList.get(i).getReport() ;
 			this.checkInDesks[i].setText(report);	
@@ -207,7 +223,23 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 			
 			else
 				checkInDesks[i].setForeground(Color.BLACK);
-    	}
+    	}}
+    else
+    {
+        for (int i = 0; i < 3; i++) 
+        	{
+        		String report = cidList.get(i).getReport() ;
+    			this.checkInDesks[i].setText(report);	
+    			if (report.contains("Closing"))
+    				{checkInDesks[i].setForeground(Color.RED);
+    			}
+    				
+    			
+    			else
+    				checkInDesks[i].setForeground(Color.BLACK);
+        	}}
+    	
+    	
     }
 	
 	public CheckInDeskList getUpdatedCheckInList()
