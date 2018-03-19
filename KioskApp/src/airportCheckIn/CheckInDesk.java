@@ -1,18 +1,21 @@
 package airportCheckIn;
 
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * CheckInDesk class is used to simulates CheckIns happening at a desk.
  * It implements Runnable to enable multi-threading
  * @author Suraj Sivaprasad
  */
-public class CheckInDesk implements Runnable
+public class CheckInDesk  implements Runnable
 {
 	private int waitTime;   		//Waiting Time 
 	private int deskID;    			//CheckIn Desk ID
 	private ArrayList<CheckIn> checkInsAtThisDesk;  //list of checkIns processed at this desk
-	private AirportModel airport;	//The Airport Model, where the CheckInDesks are located
+	private AirportModel airport;
+	private String report="";//The Airport Model, where the CheckInDesks are located
 
 	public CheckInDesk(int id, AirportModel a)
 	{
@@ -41,7 +44,7 @@ public class CheckInDesk implements Runnable
 	//Returns the report of all CheckIns at this desk
 	public String getCidList()
 	{
-		String report = "";
+		report = "";
 		if (checkInsAtThisDesk.size() == 0) 
 		{
 			report += "\n No CheckIns have happened at Desk "+deskID+"\n";
@@ -73,7 +76,7 @@ public class CheckInDesk implements Runnable
 	{
 		//Keep processing until airport time is not finished
 		int count=0;
-		while (count<20) 
+		while (count<5) 
 		{
 		try {count++;
 				if (deskID/2 == 0) 
@@ -91,9 +94,7 @@ public class CheckInDesk implements Runnable
 				{
 					String bRef=c.getPassenger().getBookingRef();
 					airport.CheckInNowStage2(bRef);
-
-					System.out.println("\n: Check-In Desk "+deskID+" \n" +airport.CheckInStatusInUse(c));
-					System.out.println(airport.findCheckInDetailsByBookRef(bRef));
+					System.out.println(printDetails(c,bRef));
 					
 				}
 
@@ -112,5 +113,26 @@ public class CheckInDesk implements Runnable
 				System.out.println("\nException in Check-In Desk "+ deskID + e.getStackTrace());
 			}
 		}System.out.println("Closing"+Integer.toString(deskID));
+		FinishReport();
+		airport.Finish();
+		
 	}	
+	
+	public String printDetails(CheckIn c1,String bRef1)
+	{
+		
+		report="\n: Check-In Desk "+deskID+" \n" +airport.CheckInStatusInUse(c1)+airport.findCheckInDetailsByBookRef(bRef1);
+		return report;
+	}
+	
+	public String getReport()
+	{
+		return report;
+	}
+	
+	public void FinishReport()
+	{
+		report="Closing"+deskID;
+	}
+	
 }

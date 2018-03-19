@@ -66,7 +66,7 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 		checkInDesks = new JTextArea [numDesks];
 		for (int i = 0; i < numDesks; i++) 
 		{
-			checkInDesks[i]= new JTextArea(15,40);
+			checkInDesks[i]= new JTextArea(20,40);
 			checkInDesks[i].setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
 			checkInDesks[i].setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Color.LIGHT_GRAY));
 			checkInDesks[i].setEditable(false);
@@ -107,7 +107,7 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 
 		//The queuePanel is used to display the queue information
 		JPanel queuePanel = new JPanel();	
-		displayQueue = new JTextArea(10,80);		//10 row cells and 80 column cells
+		displayQueue = new JTextArea(5,80);		//10 row cells and 80 column cells
 		displayQueue.setFont(new Font (Font.MONOSPACED,Font.PLAIN,14));		//Monospaced font for good formatting
 		displayQueue.setEditable(false);
 		scrollQueue = new JScrollPane(displayQueue);	//The display area can be scrolled.
@@ -193,13 +193,17 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
     //possibly investigate SwingWorker
     //for each customer, store bidlist into correct panel
     public synchronized void update(Observable o, Object args) 
-    {
+    {System.out.println("Calling update");
+    displayQueue.setText(airport.getQ());
+    displayFlight.setText(airport.printFlightDetails());
     	for (int i = 0; i < numDesks; i++) 
     	{
-    		String report = cidList.get(i).getCidList() ;
+    		String report = cidList.get(i).getReport() ;
 			this.checkInDesks[i].setText(report);	
-			if (report.contains("WINNING"))
-				checkInDesks[i].setForeground(Color.RED);
+			if (report.contains("Closing"))
+				{checkInDesks[i].setForeground(Color.RED);
+			}
+				
 			
 			else
 				checkInDesks[i].setForeground(Color.BLACK);

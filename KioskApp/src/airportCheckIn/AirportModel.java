@@ -484,32 +484,42 @@ public class AirportModel extends Observable implements  Runnable
 			report += String.format("%-25s", c.getPassenger().getPaxName().getFullName());
 			report += String.format("%-15s", c.getPassenger().getBookingRef() );
 			report += String.format("%-10s", c.getFlight().getFlightCode());
-			report += String.format("%-20f", c.getBaggage().getBagLength()+"X"+c.getBaggage().getBagBreadth()+"X"+c.getBaggage().getBagHeight());
+			report += String.format("%-20s", c.getBaggage().getBagLength()+"X"+c.getBaggage().getBagBreadth()+"X"+c.getBaggage().getBagHeight());
 			report += "\n";
 		}
 		return report;
 	}
 
 	//Use for component to display flight status
-	public String printFlightDetails(Flight f)
-	{
-		int count=0;
-		int max=f.getMaxNumOfPax();
+	public String printFlightDetails()
+	{String report="";
+		
+		
+      for(Flight f: flts)
+		{int max=f.getMaxNumOfPax();
 		double total=f.getMaxBagWeight();
 		double current=0.0;
-
-		for(CheckIn c:chks)
-		{
-			if(c.getCheckedIn()==true)
+		int count=0;
+	
+    	for(CheckIn c:chks)
+		{if(c.getFlight()==f)
+			{if(c.getCheckedIn()==true)
 			{
 				count++;
 				current+=c.getBaggage().getBagWeight();
 			}
 			else {}
-		}
+		}}
 		double perc=(current/total)*100;
-		return Integer.toString(count)+" checked in of "+Integer.toString((int)max)+"\n"+"Hold is "+perc+"% full ";
-	}
+		report += String.format("%-25s", f.getFlightCode());
+		report += String.format("%-15s", f.getAirlineName() );
+		report += String.format("%-10s", f.getDestination());
+		report += String.format("%-10s", max);
+		report += String.format("%-10s", perc);
+		report+="\n";
+		//return Integer.toString(count)+" checked in of "+Integer.toString((int)max)+"\n"+"Hold is "+perc+"% full ";
+	
+		}return report;}
 
 
 	//Use for component to display status of check-In class - Desk1,Desk2
@@ -566,13 +576,22 @@ public class AirportModel extends Observable implements  Runnable
 	{
 		if(q.isEmpty())
 		{
+			
+			setChanged();
+			notifyObservers();
+			clearChanged();
 			return null;
 		}
 		else
 		{
 			CheckIn c=q.poll();
+			
+			setChanged();
+			notifyObservers();
+			clearChanged();
 			return c;
-		}		
+		}
+	
 	}
 	/**
 	 * Method to return one chosen object from the Set of CheckIns to the Queue
@@ -602,13 +621,19 @@ public class AirportModel extends Observable implements  Runnable
 				System.out.println("\n"+c.getPassenger().getPaxName().getFullName()+" has been added to the queue");
 
 				//Update GUI View display
-				setChanged();
-				notifyObservers();
-				clearChanged();
-				System.out.println("Hello");
+				System.out.println("Changing display");
+				
+				
 		        return c;
 		    }
 		}
 		return null;
+	}
+	
+	public void Finish()
+	{
+		setChanged();
+		notifyObservers();
+		clearChanged();
 	}
 }
