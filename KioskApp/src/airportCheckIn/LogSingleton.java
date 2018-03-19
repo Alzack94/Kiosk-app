@@ -27,6 +27,7 @@ public class LogSingleton
 		}
 		return instance;
 	}
+	
 	public void logEnterQueue(Passenger p) 
 	{
 		a++;

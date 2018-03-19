@@ -30,7 +30,7 @@ public class CheckInDesk  implements Runnable
 		//If speed is totally variable, we don't seem to get any processing clashes or failures
 		//Setting 2 different waiting times will give some clashes as well as some variation
 		int random0to100 =(int)(Math.random() * 101);
-		waitTime = 3000 + 2000*(random0to100%2);
+		waitTime = 3000 + 1000*(random0to100%2);
 	}
 
 	//add a CheckIn in the list of this desk to be processed
@@ -81,13 +81,12 @@ public class CheckInDesk  implements Runnable
 		//Keep processing until airport time is not finished
 		System.out.println("Starting Thread for Check-In Desk "+deskID);
 		
-		
-		while (count<10) 
+		try 
 		{
-			count++;
-
-			try 
+			while (count<7) 
 			{
+				count++;
+		
 				if (deskID%2 == 0) //Sleep first for even-numbered Check-In Desks
 				{  
 					//Introduce variation in sleeping pattern, so CheckIns have different times
@@ -100,7 +99,7 @@ public class CheckInDesk  implements Runnable
 				
 					if(c==null)
 					{
-						report="\nCHECK-IN DESK "+deskID+" has OPENED but is not processing any Passengers.";
+						report="\nCHECK-IN DESK "+deskID+" is OPEN but not processing any Passengers.";
 						System.out.println(report);
 					}
 					else
@@ -116,22 +115,23 @@ public class CheckInDesk  implements Runnable
 					//set a pause before the bid
 					Thread.sleep(waitTime);
 				}
-			}
+			}//End of while loop for 7 passengers per CheckIn Desk
 			
-			catch (InterruptedException e)
-			{
-				System.out.println("\nCheck-In Desk "+deskID+ " Interrupted");
-			}
-			catch (Exception e) 
-			{
-				System.out.println("\nException in Check-In Desk "+ deskID + e.getStackTrace());
-			}
+			Thread.sleep(3000);
+			System.out.println("\nCLOSING CHECK-IN DESK NUMBER "+ deskID+" since it's quota of 7 tries is over.\n");
+			closed=true;
+			FinishReport();
+			airport.Finish();
 		}
-		
-		System.out.println("CLOSING CHECK-IN DESK NUMBER "+ deskID);
-		closed=true;
-		FinishReport();
-		airport.Finish();
+			
+		catch (InterruptedException e)
+		{
+			System.out.println("\nCheck-In Desk "+deskID+ " Interrupted");		
+		}
+		catch (Exception e) 
+		{
+			System.out.println("\nException in Check-In Desk "+ deskID + e.getStackTrace());
+		}
 	}	
 
 	public String printDetails(CheckIn c1)
@@ -148,6 +148,6 @@ public class CheckInDesk  implements Runnable
 	
 	public void FinishReport()
 	{
-		report="\n CLOSING CHECK-IN DESK NUMBER "+deskID;
+		report="\n CLOSING CHECK-IN DESK NUMBER "+deskID+"\n since it's quota of 7 tries is over.";
 	}
 }

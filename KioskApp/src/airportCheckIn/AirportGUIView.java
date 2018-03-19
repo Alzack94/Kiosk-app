@@ -210,7 +210,8 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 
 		displayFlight.setText(airport.printFlightDetails());
 		if(airport.getNumDesks()==3&&flag==0)
-		{flag=1;
+		{
+			flag=1;
 			System.out.println("Splitting GUI-> From 2 CheckIn Desks to 3");
 			cidPanel.removeAll();
 			validate();

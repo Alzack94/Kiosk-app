@@ -23,8 +23,7 @@ public class AirportModel extends Observable implements  Runnable
 	private Thread [] cidThreads;			//Threads for handling CheckIn Desks
 	@SuppressWarnings("unused")
 	private AirportGUIView view;			//The GUI class - View under MVC pattern
-	private static int numDesks=2;
-	private int count1=0;
+	private static int numDesks=2;			//Number of CheckIn Desks
 	/**
 	 * Constructor to creates list of customers
 	 */
@@ -450,7 +449,8 @@ public class AirportModel extends Observable implements  Runnable
 	 * @param w		Bag Weight
 	 */
 	public void CheckInNowStage1(String bRef, int l, int h, int b, double w)
-	{LogSingleton ls=LogSingleton.getInstance();
+	{
+		LogSingleton ls=LogSingleton.getInstance();
 		for (CheckIn c : chks)
 		{
 			try
@@ -539,12 +539,12 @@ public class AirportModel extends Observable implements  Runnable
 	//Use for component to display status of Check-In Desks
 	public String CheckInStatusInUse(CheckIn c)
 	{
-		String d="Currently Processing Check-In of this Passenger\n\n";
+		String d="Processing Check-In of this Passenger\n\n";
 		d+= "NAME: "+c.getPassenger().getPaxName().getFullName();
 		d+= "\nBOOKING REF: "+c.getPassenger().getBookingRef();
 		d+= "\nBAG WEIGHT: "+c.getBaggage().getBagWeight()+" KG";
 		d+= "\nBAG VOLUME: "+c.getBaggage().getBagVolume()+" cm3";
-		d+= "\nEXCESS BAGGAGE FEES: $ "+c.getExcessFee();
+		d+= "\nEXCESS BAGGAGE FEES: $ "+String.format("%.2f",c.getExcessFee());
 		return d;
 	}
 	
@@ -553,49 +553,43 @@ public class AirportModel extends Observable implements  Runnable
 	 * Run method() for the thread
 	 * Starts off each cThread for each CheckIn Desk
 	 */
-	@SuppressWarnings("deprecation")
 	public void run() 
 	{
 		System.out.println("\nStarted Airport Queue Thread -> Passengers now entering queue\n");
-		int count=75;		//Count for adding passengers to the queue
+		int count=50;		//Count for adding 50 passengers to the queue
 
 		cidThreads = new Thread[3];
-		for (int i = 0; i < 2; i++)
+		for (int i = 0; i < 2; i++)	//Initially start 2 threads
 		{
 			cidThreads[i] = new Thread(cidList.get(i));
 			cidThreads[i].start();
 		}
 
-		while(count>=0)
+		while(count>0)		//Only add upto 50 passengers in the queue, till the airport queue closes.
 		{
 			try
-			{count1++;
-				Thread.sleep(400);	//A new passenger enters the queue every 0.4 secs
+			{
+				Thread.sleep(500);	//A new passenger enters the queue every 0.5 secs
 				CheckIn c = addOneToQueue();
 				q.add(c);
-				if(q.size()==20&&numDesks!=3)
+				if(q.size()>=20&&numDesks!=3)	//If more than 20 passengers & only two desks, add one more desk
 				{
 					numDesks=3;
 					CheckInDesk d = new CheckInDesk (3, this);
 					cidList.add(d);
 					cidThreads[2] = new Thread(d);
 					cidThreads[2].start();
-					System.out.println("New CheckIn-Desk Number 3 Added.");
-				}
-				else if(count>30) {
-					
-					
+					System.out.println("New CheckIn-Desk Number 3 Added, since more than 20 passengers in queue & only 2 CheckIn Deskss");
 				}
 			}
 			catch (Exception e) 
 			{
 				System.out.println("Airport thread exception" + e.getStackTrace());
 			}
-			
-			count--;
+			count--;	//Decrease count, since a passenger has been added to the queue
 		}
 		
-		System.out.println("\nFinished. No more passengers entering queue.");
+		System.out.println("\nFinished. 50 passengers entered queue. No more allowed into queue.");
 		finished = true;
 	}
 	
