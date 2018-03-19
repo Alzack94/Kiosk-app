@@ -1,8 +1,8 @@
 package airportCheckIn;
 
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
+//import java.util.Observable;
+//import java.util.Observer;
 
 /**
  * CheckInDesk class is used to simulates CheckIns happening at a desk.
@@ -15,10 +15,11 @@ public class CheckInDesk  implements Runnable
 	private int deskID;    			//CheckIn Desk ID
 	private ArrayList<CheckIn> checkInsAtThisDesk;  //list of checkIns processed at this desk
 	private AirportModel airport;
-	private String report="";//The Airport Model, where the CheckInDesks are located
+	private String report;//The Airport Model, where the CheckInDesks are located
 
 	public CheckInDesk(int id, AirportModel a)
 	{
+		report="";
 		deskID=id;
 		checkInsAtThisDesk = new ArrayList<CheckIn>();
 		airport=a;
@@ -44,28 +45,28 @@ public class CheckInDesk  implements Runnable
 	//Returns the report of all CheckIns at this desk
 	public String getCidList()
 	{
-		report = "";
+		String d = "";
 		if (checkInsAtThisDesk.size() == 0) 
 		{
-			report += "\n No CheckIns have happened at Desk "+deskID+"\n";
+			d += "\n No CheckIns have happened at Desk "+deskID+"\n";
 		}
 		else 
 		{
-			report += "\n********************CheckIns at Desk "+deskID+"********************\n";
-			report = "FULLNAME                    BOOKINGREF    FLIGHTCODE  EXCESSFEES($)  CHECKED-IN\n";
-			report+= "-------------------------------------------------------------------------------\n";
+			d += "\n********************CheckIns at Desk "+deskID+"********************\n";
+			d = "FULLNAME                    BOOKINGREF    FLIGHTCODE  EXCESSFEES($)  CHECKED-IN\n";
+			d+= "-------------------------------------------------------------------------------\n";
 			for (CheckIn s  : checkInsAtThisDesk)
 			{
-				report += String.format("%-28s", s.getPassenger().getPaxName().getFullName());
-				report += String.format("%-14s", s.getPassenger().getBookingRef() );
-				report += String.format("%-12s", s.getFlight().getFlightCode());
-				report += String.format("%-15.2f", s.getExcessFee());
-				report += String.format("%-10s", s.getCheckedIn()?"Yes":"No");
-				report += "\n";
+				d += String.format("%-28s", s.getPassenger().getPaxName().getFullName());
+				d += String.format("%-14s", s.getPassenger().getBookingRef() );
+				d += String.format("%-12s", s.getFlight().getFlightCode());
+				d += String.format("%-15.2f", s.getExcessFee());
+				d += String.format("%-10s", s.getCheckedIn()?"Yes":"No");
+				d += "\n";
 			}
-			report+= "-------------------------------------------------------------------------------\n";
+			d+= "-------------------------------------------------------------------------------\n";
 		}
-		return report;		
+		return d;		
 	}
 
 	/**
@@ -75,7 +76,7 @@ public class CheckInDesk  implements Runnable
 	public void run() 
 	{
 		//Keep processing until airport time is not finished
-		System.out.println("Starting Check-In thread"+deskID);
+		System.out.println("Starting Check-In Thread "+deskID);
 		int count=0;
 		while (count<5) 
 		{
@@ -95,7 +96,7 @@ public class CheckInDesk  implements Runnable
 				{
 					String bRef=c.getPassenger().getBookingRef();
 					airport.CheckInNowStage2(bRef);
-					System.out.println(printDetails(c,bRef));
+					System.out.println(printDetails(c));
 					
 				}
 
@@ -113,16 +114,17 @@ public class CheckInDesk  implements Runnable
 			{
 				System.out.println("\nException in Check-In Desk "+ deskID + e.getStackTrace());
 			}
-		}System.out.println("Closing"+Integer.toString(deskID));
+		}System.out.println("CLOSING CHECK-IN DESK NUMBER "+ deskID);
 		FinishReport();
 		airport.Finish();
 		
 	}	
 	
-	public String printDetails(CheckIn c1,String bRef1)
+	public String printDetails(CheckIn c1)
 	{
 		
-		report="\n: Check-In Desk "+deskID+" \n" +airport.CheckInStatusInUse(c1)+airport.findCheckInDetailsByBookRef(bRef1);
+		report="\nCHECK-IN DESK NUMBER "+deskID+" \n\n";
+		report+=airport.CheckInStatusInUse(c1);
 		return report;
 	}
 	
@@ -133,7 +135,7 @@ public class CheckInDesk  implements Runnable
 	
 	public void FinishReport()
 	{
-		report="Closing"+deskID;
+		report="\n CLOSING CHECK-IN DESK NUMBER "+deskID;
 	}
 	
 }

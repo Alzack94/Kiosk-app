@@ -31,7 +31,6 @@ public class AirportController
     		//view.updateCurrentItem(i.getItemReport());
 
 
-
     			//auction.processNextBid();
     			//view.setAfterProcessing();
     		//view.display(auction.getItemReport());

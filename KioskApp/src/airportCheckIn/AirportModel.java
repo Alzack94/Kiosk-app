@@ -477,14 +477,15 @@ public class AirportModel extends Observable implements  Runnable
 	//Use for printing list of Passengers in Queue
 	public String getQ()
 	{ 
-		String report="FULLNAME                   BOOKING      FLIGHT   BAGGAGE             \n";;
+		String report=" FULLNAME                BOOKINGREF     FLIGHTCODE  BAGGAGE-DETAILS        \n";
 	
 		for (CheckIn c : q) 
 		{
+			Baggage b=c.getBaggage();
 			report += String.format("%-25s", c.getPassenger().getPaxName().getFullName());
 			report += String.format("%-15s", c.getPassenger().getBookingRef() );
-			report += String.format("%-10s", c.getFlight().getFlightCode());
-			report += String.format("%-20s", c.getBaggage().getBagLength()+"X"+c.getBaggage().getBagBreadth()+"X"+c.getBaggage().getBagHeight());
+			report += String.format("%-12s", c.getFlight().getFlightCode());
+			report += String.format("%-23s", b.getBagWeight()+"KG  "+b.getBagLength()+"cm X "+b.getBagBreadth()+"cm X "+b.getBagHeight()+"cm");
 			report += "\n";
 		}
 		return report;
@@ -492,40 +493,52 @@ public class AirportModel extends Observable implements  Runnable
 
 	//Use for component to display flight status
 	public String printFlightDetails()
-	{String report="";
+	{
+		String report="FLIGHTCODE  MAXPASSENGERS  WEIGHTFILLED(%)  AIRLINENAME               DESTINATION                 \n";
 		
-		
-      for(Flight f: flts)
-		{int max=f.getMaxNumOfPax();
-		double total=f.getMaxBagWeight();
-		double current=0.0;
-		int count=0;
+		for(Flight f: flts)
+		{
+			int max=f.getMaxNumOfPax();
+			double total=f.getMaxBagWeight();
+			double current=0.0;
+			int count=0;
 	
-    	for(CheckIn c:chks)
-		{if(c.getFlight()==f)
-			{if(c.getCheckedIn()==true)
-			{
-				count++;
-				current+=c.getBaggage().getBagWeight();
+			for(CheckIn c:chks)
+			{	
+				if(c.getFlight()==f)
+				{
+					if(c.getCheckedIn()==true)
+					{
+						count++;
+						current+=c.getBaggage().getBagWeight();
+					}
+					else {}
+				}
 			}
-			else {}
-		}}
-		double perc=(current/total)*100;
-		report += String.format("%-25s", f.getFlightCode());
-		report += String.format("%-15s", f.getAirlineName() );
-		report += String.format("%-10s", f.getDestination());
-		report += String.format("%-10s", max);
-		report += String.format("%-10s", perc);
-		report+="\n";
-		//return Integer.toString(count)+" checked in of "+Integer.toString((int)max)+"\n"+"Hold is "+perc+"% full ";
-	
-		}return report;}
+				
+			double perc=(current/total)*100;
+			report += String.format("%-12s", f.getFlightCode());
+			report += String.format("%-15d", max);
+			report += String.format("%-17.2f", perc);
+			report += String.format("%-26s", f.getAirlineName() );
+			report += String.format("%-28s", f.getDestination());
+			report+="\n";
+			//return Integer.toString(count)+" checked in of "+Integer.toString((int)max)+"\n"+"Hold is "+perc+"% full ";
+		}
+		return report;
+	}
 
 
-	//Use for component to display status of check-In class - Desk1,Desk2
+	//Use for component to display status of Check-In Desks
 	public String CheckInStatusInUse(CheckIn c)
 	{
-		return c.getPassenger().getPaxName().getLastName()+" is dropping of 1 bag of weight "+Double.toString(c.getBaggage().getBagWeight())+".\n"+"A baggage fee of AED"+Double.toString(c.getExcessFee())+"/- is due";
+		String d="Currently Processing Check-In of this Passenger\n\n";
+		d+= "NAME: "+c.getPassenger().getPaxName().getFullName();
+		d+= "\nBOOKING REF: "+c.getPassenger().getBookingRef();
+		d+= "\nBAG WEIGHT: "+c.getBaggage().getBagWeight()+" KG";
+		d+= "\nBAG VOLUME: "+c.getBaggage().getBagVolume()+" cm3";
+		d+= "\nEXCESS BAGGAGE FEES: $ "+c.getExcessFee();
+		return d;
 	}
 	
 	

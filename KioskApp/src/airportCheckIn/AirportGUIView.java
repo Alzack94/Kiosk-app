@@ -69,9 +69,9 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 		checkInDesks = new JTextArea [nc];
 		for (int i = 0; i < nc; i++) 
 		{
-			checkInDesks[i]= new JTextArea(20,40);
-			checkInDesks[i].setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
-			checkInDesks[i].setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Color.LIGHT_GRAY));
+			checkInDesks[i]= new JTextArea(16,30);
+			checkInDesks[i].setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
+			checkInDesks[i].setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLUE));
 			checkInDesks[i].setEditable(false);
 			cidPanel.add(checkInDesks[i]);
 		}
@@ -95,26 +95,29 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 		close.setBackground(Color.RED);
 		close.setForeground(Color.WHITE);
 		close.addActionListener(this);
+		firstPanel.setBackground(Color.YELLOW);
 		firstPanel.add(close);
 
 		//The titlePanel is used to display the title and a button to proceed simulation
 		JPanel titlePanel = new JPanel();		
-		JLabel titleLabel = new JLabel("Sree&Suraj&Hari - Airport CheckIn");
-		titleLabel.setFont(new Font (Font.SANS_SERIF,Font.BOLD,20));
+		JLabel titleLabel = new JLabel("Sreepratha Suraj and Hari - Airport CheckIn  ");
+		titleLabel.setFont(new Font (Font.SANS_SERIF,Font.ITALIC,20));
 		titlePanel.add(titleLabel);
 		proceed = new JButton("Proceed with Simulation");
-		proceed.setFont(myFont);
+		proceed.setFont(new Font (Font.SANS_SERIF,Font.BOLD,16));
 		proceed.setBackground(Color.GREEN);
 		proceed.setForeground(Color.BLACK);
+		titlePanel.setBackground(Color.YELLOW);
 		titlePanel.add(proceed);
 
 		//The queuePanel is used to display the queue information
 		JPanel queuePanel = new JPanel();	
-		displayQueue = new JTextArea(5,80);		//10 row cells and 80 column cells
-		displayQueue.setFont(new Font (Font.MONOSPACED,Font.PLAIN,14));		//Monospaced font for good formatting
+		displayQueue = new JTextArea(8,110);		//10 row cells and 80 column cells
+		displayQueue.setFont(new Font (Font.MONOSPACED,Font.PLAIN,16));		//Monospaced font for good formatting
 		displayQueue.setEditable(false);
 		scrollQueue = new JScrollPane(displayQueue);	//The display area can be scrolled.
 		scrollQueue.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));	//To create a small border 
+		queuePanel.setBackground(Color.ORANGE);
 		queuePanel.add(scrollQueue);
 
 		//Set up the northPanel which contains the previous two panels
@@ -123,9 +126,12 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 		northPanel.setLayout(new GridLayout(2,1));
 		topPanel.add(firstPanel);
 		topPanel.add(titlePanel);
-		JLabel queueLabel = new JLabel("   Queue Of Passengers waiting");
+		JPanel qPanel=new JPanel();
+		JLabel queueLabel = new JLabel("Queue Of Waiting Passengers");
+		qPanel.setBackground(Color.ORANGE);
 		queueLabel.setFont(new Font (Font.SANS_SERIF,Font.BOLD,16));
-		topPanel.add(queueLabel);
+		qPanel.add(queueLabel);
+		topPanel.add(qPanel);
 		northPanel.add(topPanel);
 		northPanel.add(queuePanel);
 		scrollNorth = new JScrollPane(northPanel);
@@ -142,17 +148,17 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 
 		//The flightPanel is used to display the queue information
 		JPanel flightPanel  = new JPanel();	
-		displayFlight = new JTextArea(10,80);		//10 row cells and 80 column cells
-		displayFlight.setFont(new Font (Font.MONOSPACED,Font.PLAIN,14));		//Monospaced font for good formatting
+		displayFlight = new JTextArea(10,110);		//10 row cells and 80 column cells 
+		displayFlight.setFont(new Font (Font.MONOSPACED,Font.PLAIN,16));		//Monospaced font for good formatting
 		displayFlight.setEditable(false);
 		scrollFlight = new JScrollPane(displayFlight);	//The display area can be scrolled.
 		scrollFlight.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));	//To create a small border 
-		flightPanel.add(scrollFlight);
 
+		flightPanel.add(scrollFlight);
+		flightPanel.setBackground(Color.CYAN);
 		scrollSouth = new JScrollPane(flightPanel);
 		scrollSouth.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));	//To create a small border 
 		this.add(scrollSouth,BorderLayout.SOUTH);	//add to the South position of this Frame
-	
 	}
 
 
@@ -167,8 +173,6 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 		proceed.setEnabled(false);
 	}
 
-	
-	
 	/**
 	 * Implementation of the abstract actionPerformed Method of the ActionListener Interface
 	 * Event Handling is performed here when a button is clicked.
@@ -180,68 +184,68 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 		if (e.getSource() == close) 
 		{	
 			JLabel closeLabel;
-			closeLabel= new JLabel("The Booking Report File can be found after this GUI is closed.");
+			closeLabel= new JLabel("The Log File of all Events can be found after this GUI is closed.");
 			closeLabel.setFont(myFont);
 			closeLabel.setForeground(Color.RED);
-			JOptionPane.showMessageDialog(this,closeLabel,"GoodBye From Suraj-Sree-Hari Airport!",JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(this,closeLabel,"GoodBye From Sree Suraj and Hari Airport!",JOptionPane.INFORMATION_MESSAGE);
 			setVisible(false);
 			this.dispose();
 			System.exit(0);
 		}
 	}  
 
-	 
+
 	//OBSERVER pattern - must provide update methods
-    //synchronized blocks access to sync methods of the same object until finished
-    //possibly investigate SwingWorker
-    //for each customer, store bidlist into correct panel
-    public synchronized void update(Observable o, Object args) 
-    {count++;
-    
-    	System.out.println("Calling update");
-    displayQueue.setText(airport.getQ());
-   
-    displayFlight.setText(airport.printFlightDetails());
-    if(airport.getnum()==3)
-    {System.out.println("Spliting gui");
-    	cidPanel.removeAll();
-    	validate();
-    	setupCenterPanel(3);
-    	validate();
-    	num=3;
-    }
-    if(num==2)	
-    {
-    for (int i = 0; i < 2; i++) 
-    	{
-    		String report = cidList.get(i).getReport() ;
-			this.checkInDesks[i].setText(report);	
-			if (report.contains("Closing"))
-				{checkInDesks[i].setForeground(Color.RED);
+	//synchronized blocks access to sync methods of the same object until finished
+	public synchronized void update(Observable o, Object args) 
+	{
+		count++;
+
+		System.out.println("Calling Update method of Observer");
+		displayQueue.setText(airport.getQ());
+
+		displayFlight.setText(airport.printFlightDetails());
+		if(airport.getnum()==3)
+		{
+			System.out.println("Spliting GUI: From 2 Desks to 3");
+			cidPanel.removeAll();
+			validate();
+			setupCenterPanel(3);
+			validate();
+			num=3;
+		}
+		if(num==2)	
+		{
+			for (int i = 0; i < 2; i++) 
+			{
+				String report = cidList.get(i).getReport() ;
+				this.checkInDesks[i].setText(report);	
+				if (report.contains("CLOSING"))
+				{
+					checkInDesks[i].setBackground(Color.RED);
+					checkInDesks[i].setForeground(Color.WHITE);
+				}
+				else
+					checkInDesks[i].setForeground(Color.BLACK);
 			}
-				
-			
-			else
-				checkInDesks[i].setForeground(Color.BLACK);
-    	}}
-    else
-    {
-        for (int i = 0; i < 3; i++) 
-        	{
-        		String report = cidList.get(i).getReport() ;
-    			this.checkInDesks[i].setText(report);	
-    			if (report.contains("Closing"))
-    				{checkInDesks[i].setForeground(Color.RED);
-    			}
-    				
-    			
-    			else
-    				checkInDesks[i].setForeground(Color.BLACK);
-        	}}
-    	
-    	
-    }
-	
+		}
+		else
+		{
+			for (int i = 0; i < 3; i++) 
+			{
+				String report = cidList.get(i).getReport() ;
+				this.checkInDesks[i].setText(report);	
+				if (report.contains("CLOSING"))
+				{
+					checkInDesks[i].setBackground(Color.RED);
+					checkInDesks[i].setForeground(Color.WHITE);
+				}
+				else
+					checkInDesks[i].setForeground(Color.BLACK);
+			}
+		}
+	}
+
 	public CheckInDeskList getUpdatedCheckInList()
 	{
 		return cidList;
