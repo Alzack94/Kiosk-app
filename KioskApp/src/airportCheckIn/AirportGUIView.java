@@ -23,6 +23,7 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 	private GridLayout gr;
 	private JPanel cidPanel;
 	private int count;
+	private int flag=0;
 	//GUI Components
 	JButton proceed, close;
 	JScrollPane scrollList, scrollNorth, scrollQueue, scrollFlight, scrollSouth;
@@ -208,8 +209,8 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 		displayQueue.setText(airport.getQ());
 
 		displayFlight.setText(airport.printFlightDetails());
-		if(airport.getNumDesks()==3)
-		{
+		if(airport.getNumDesks()==3&&flag==0)
+		{flag=1;
 			System.out.println("Splitting GUI-> From 2 CheckIn Desks to 3");
 			cidPanel.removeAll();
 			validate();

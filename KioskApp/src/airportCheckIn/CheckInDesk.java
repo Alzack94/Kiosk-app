@@ -12,13 +12,16 @@ import java.util.ArrayList;
 public class CheckInDesk  implements Runnable
 {
 	private int waitTime;   		//Waiting Time 
+	private boolean closed;			//Boolean closed is initially false. It is later set to true, when the Check-In Desk closes.
 	private int deskID;    			//CheckIn Desk ID
 	private ArrayList<CheckIn> checkInsAtThisDesk;  //list of checkIns processed at this desk
 	private AirportModel airport;
-	private String report;//The Airport Model, where the CheckInDesks are located
+	private String report;
+	int count=0;//The Airport Model, where the CheckInDesks are located
 
 	public CheckInDesk(int id, AirportModel a)
 	{
+		closed=false;
 		report="";
 		deskID=id;
 		checkInsAtThisDesk = new ArrayList<CheckIn>();
@@ -77,9 +80,9 @@ public class CheckInDesk  implements Runnable
 	{
 		//Keep processing until airport time is not finished
 		System.out.println("Starting Thread for Check-In Desk "+deskID);
-		int count=0;
 		
-		while (count<5) 
+		
+		while (count<10) 
 		{
 			count++;
 
@@ -91,18 +94,21 @@ public class CheckInDesk  implements Runnable
 					Thread.sleep(waitTime);
 				}
 				
-				CheckIn c=airport.getFrontOfQueue(deskID);
+				if(!closed)
+				{
+					CheckIn c=airport.getFrontOfQueue(deskID);
 				
-				if(c==null)
-				{
-					report="\nCHECK-IN DESK "+deskID+" has OPENED but is not processing any Passengers.";
-					System.out.println(report);
-				}
-				else
-				{
-					String bRef=c.getPassenger().getBookingRef();
-					airport.CheckInNowStage2(bRef,deskID);
-					System.out.println(printDetails(c));
+					if(c==null)
+					{
+						report="\nCHECK-IN DESK "+deskID+" has OPENED but is not processing any Passengers.";
+						System.out.println(report);
+					}
+					else
+					{
+						String bRef=c.getPassenger().getBookingRef();
+						airport.CheckInNowStage2(bRef,deskID);
+						System.out.println(printDetails(c));
+					}
 				}
 				
 				if (deskID%2 != 0) //Sleep later for odd-numbered Check-In Desks
@@ -123,6 +129,7 @@ public class CheckInDesk  implements Runnable
 		}
 		
 		System.out.println("CLOSING CHECK-IN DESK NUMBER "+ deskID);
+		closed=true;
 		FinishReport();
 		airport.Finish();
 	}	

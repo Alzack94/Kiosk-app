@@ -24,6 +24,7 @@ public class AirportModel extends Observable implements  Runnable
 	@SuppressWarnings("unused")
 	private AirportGUIView view;			//The GUI class - View under MVC pattern
 	private static int numDesks=2;
+	private int count1=0;
 	/**
 	 * Constructor to creates list of customers
 	 */
@@ -412,13 +413,15 @@ public class AirportModel extends Observable implements  Runnable
 	 * @param bRef 	Booking Reference
 	 */
 	public void CheckInNowStage2(String bRef,int a)
-	{LogSingleton ls=LogSingleton.getInstance();
+	{
+		LogSingleton ls=LogSingleton.getInstance();
 		for (CheckIn c : chks)
 		{
 			try
 			{
 				if(bRef.equals(c.getPassenger().getBookingRef()))
-				{ls.logCheckedIn(c.getPassenger(),a);
+				{
+					ls.logCheckedIn(c.getPassenger(),a);
 					if(c.getCheckedIn())	//If the passenger has already completed the check-in
 					throw new AlreadyCheckedInException(bRef);
 				}
@@ -550,10 +553,11 @@ public class AirportModel extends Observable implements  Runnable
 	 * Run method() for the thread
 	 * Starts off each cThread for each CheckIn Desk
 	 */
+	@SuppressWarnings("deprecation")
 	public void run() 
 	{
 		System.out.println("\nStarted Airport Queue Thread -> Passengers now entering queue\n");
-		int count=100;		//Count for adding passengers to the queue
+		int count=75;		//Count for adding passengers to the queue
 
 		cidThreads = new Thread[3];
 		for (int i = 0; i < 2; i++)
@@ -565,19 +569,22 @@ public class AirportModel extends Observable implements  Runnable
 		while(count>=0)
 		{
 			try
-			{
+			{count1++;
 				Thread.sleep(400);	//A new passenger enters the queue every 0.4 secs
 				CheckIn c = addOneToQueue();
 				q.add(c);
-				if(q.size()==20)
+				if(q.size()==20&&numDesks!=3)
 				{
 					numDesks=3;
-					System.out.println("Adding new desk");
 					CheckInDesk d = new CheckInDesk (3, this);
 					cidList.add(d);
 					cidThreads[2] = new Thread(d);
 					cidThreads[2].start();
-					System.out.println("New Desk Added");
+					System.out.println("New CheckIn-Desk Number 3 Added.");
+				}
+				else if(count>30) {
+					
+					
 				}
 			}
 			catch (Exception e) 
@@ -588,8 +595,7 @@ public class AirportModel extends Observable implements  Runnable
 			count--;
 		}
 		
-		System.out.println("Time Up");
-		System.out.println("Finishing");
+		System.out.println("\nFinished. No more passengers entering queue.");
 		finished = true;
 	}
 	
@@ -678,4 +684,6 @@ public class AirportModel extends Observable implements  Runnable
 	{
 		return numDesks;
 	}
+	
+	
 }
