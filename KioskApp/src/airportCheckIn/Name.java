@@ -16,13 +16,6 @@ public class Name implements Comparable <Name>
 	 * @param fName first name
 	 * @param lName last name
 	 */
-	public Name(String lname)
-	{
-		firstName="";
-		middleName="";
-		lastName=lname;
-		
-	}
 	public Name(String fName, String lName)
 	{
 		firstName = fName;
@@ -51,7 +44,7 @@ public class Name implements Comparable <Name>
 	 * Example2: first name, space, middle name, space, last name
 	 * @param fullName A string that contains the whole name
 	 */
-/*	public Name (String fullName) 
+	public Name (String fullName) 
 	{
 		int spacePos1 = fullName.indexOf(' ');    //find position of first space after the first name
 		firstName = fullName.substring(0, spacePos1); 
@@ -62,7 +55,6 @@ public class Name implements Comparable <Name>
 			middleName = fullName.substring(spacePos1+1, spacePos2);
 		lastName = fullName.substring(spacePos2 + 1);
 	}
-	*/
 
 	/**
 	 * A get method to return the first name only

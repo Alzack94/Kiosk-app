@@ -6,6 +6,7 @@ public class AirportDemo
 	{
 		AirportModel model = new AirportModel();   //the model
 		AirportGUIView view  = new AirportGUIView(model);
+		@SuppressWarnings("unused")
 		AirportController controller = new AirportController(model, view);   
 		view.setVisible(true);
 		

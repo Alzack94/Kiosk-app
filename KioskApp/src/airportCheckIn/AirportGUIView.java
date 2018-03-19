@@ -22,8 +22,7 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 	private int numDesks;
 	private GridLayout gr;
 	private JPanel cidPanel;
-	private int count=0;
-	private int num=2;
+	private int count;
 	//GUI Components
 	JButton proceed, close;
 	JScrollPane scrollList, scrollNorth, scrollQueue, scrollFlight, scrollSouth;
@@ -42,6 +41,8 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 		//setModal(true);		 	//Blocks input to others so that there will be no concurrency issues
 
 		this.airport=airport;
+		count=0;
+		numDesks=2;
 		airport.addObserver(this);
 		cidList=airport.getListOfCheckInDesks();
 		numDesks=cidList.getSize();
@@ -112,7 +113,7 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 
 		//The queuePanel is used to display the queue information
 		JPanel queuePanel = new JPanel();	
-		displayQueue = new JTextArea(5,110);		//10 row cells and 80 column cells
+		displayQueue = new JTextArea(5,120);		//10 row cells and 80 column cells
 		displayQueue.setFont(new Font (Font.MONOSPACED,Font.PLAIN,16));		//Monospaced font for good formatting
 		displayQueue.setEditable(false);
 		scrollQueue = new JScrollPane(displayQueue);	//The display area can be scrolled.
@@ -148,7 +149,7 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 
 		//The flightPanel is used to display the queue information
 		JPanel flightPanel  = new JPanel();	
-		displayFlight = new JTextArea(6,110);		//10 row cells and 80 column cells 
+		displayFlight = new JTextArea(7,120);		//10 row cells and 80 column cells 
 		displayFlight.setFont(new Font (Font.MONOSPACED,Font.PLAIN,16));		//Monospaced font for good formatting
 		displayFlight.setEditable(false);
 		scrollFlight = new JScrollPane(displayFlight);	//The display area can be scrolled.
@@ -202,23 +203,21 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 	//OBSERVER pattern - must provide update methods
 	//synchronized blocks access to sync methods of the same object until finished
 	public synchronized void update(Observable o, Object args) 
-	{
-		count++;
-
-		System.out.println("Calling Update method of Observer");
+	{		
+		System.out.println("Invoked Update method of Observer -> AirportGUIView");
 		displayQueue.setText(airport.getQ());
 
 		displayFlight.setText(airport.printFlightDetails());
-		if(airport.getnum()==3)
+		if(airport.getNumDesks()==3)
 		{
-			System.out.println("Spliting GUI: From 2 Desks to 3");
+			System.out.println("Splitting GUI-> From 2 CheckIn Desks to 3");
 			cidPanel.removeAll();
 			validate();
 			setupCenterPanel(3);
 			validate();
-			num=3;
+			numDesks=3;
 		}
-		if(num==2)	
+		if(numDesks==2)	
 		{
 			for (int i = 0; i < 2; i++) 
 			{
@@ -255,11 +254,19 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 		return cidList;
 	}
 
+	public int getCount() 
+	{
+		return count;
+	}
+
+
 	/**
 	 * Method to clear and reset all the GUI Components back to their default values.
-	 */
-	private void resetCheckIn()
+	*/
+	
+/*	private void resetCheckIn()
 	{
 
 	}
+*/
 }

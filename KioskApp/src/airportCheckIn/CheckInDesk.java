@@ -76,58 +76,64 @@ public class CheckInDesk  implements Runnable
 	public void run() 
 	{
 		//Keep processing until airport time is not finished
-		System.out.println("Starting Check-In Thread "+deskID);
+		System.out.println("Starting Thread for Check-In Desk "+deskID);
 		int count=0;
+		
 		while (count<5) 
-		{count++;
-		try {
-				if (deskID/2 == 0) 
+		{
+			count++;
+
+			try 
+			{
+				if (deskID%2 == 0) //Sleep first for even-numbered Check-In Desks
 				{  
 					//Introduce variation in sleeping pattern, so CheckIns have different times
 					Thread.sleep(waitTime);
 				}
-
+				
 				CheckIn c=airport.getFrontOfQueue(deskID);
+				
 				if(c==null)
 				{
-					System.out.println("CheckIn Desk is inactive because there are no Passengers in Queue");
+					report="\nCHECK-IN DESK "+deskID+" has OPENED but is not processing any Passengers.";
+					System.out.println(report);
 				}
 				else
 				{
 					String bRef=c.getPassenger().getBookingRef();
 					airport.CheckInNowStage2(bRef,deskID);
 					System.out.println(printDetails(c));
-					
 				}
-
-				if (deskID/2 != 0) 
+				
+				if (deskID%2 != 0) //Sleep later for odd-numbered Check-In Desks
 				{
 					//set a pause before the bid
 					Thread.sleep(waitTime);
 				}
 			}
-			catch (InterruptedException e) 
+			
+			catch (InterruptedException e)
 			{
-				System.out.println("\n Check-In Desk "+deskID + "  Interrupted");
+				System.out.println("\nCheck-In Desk "+deskID+ " Interrupted");
 			}
 			catch (Exception e) 
 			{
 				System.out.println("\nException in Check-In Desk "+ deskID + e.getStackTrace());
 			}
-		}System.out.println("CLOSING CHECK-IN DESK NUMBER "+ deskID);
+		}
+		
+		System.out.println("CLOSING CHECK-IN DESK NUMBER "+ deskID);
 		FinishReport();
 		airport.Finish();
-		
 	}	
-	
+
 	public String printDetails(CheckIn c1)
 	{
-		
-		report="\nCHECK-IN DESK NUMBER "+deskID+" \n\n";
+		report="\nCHECK-IN DESK NUMBER "+deskID+"\n\n";
 		report+=airport.CheckInStatusInUse(c1);
 		return report;
 	}
-	
+
 	public String getReport()
 	{
 		return report;
@@ -137,5 +143,4 @@ public class CheckInDesk  implements Runnable
 	{
 		report="\n CLOSING CHECK-IN DESK NUMBER "+deskID;
 	}
-	
 }

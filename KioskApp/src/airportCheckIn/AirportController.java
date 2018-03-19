@@ -1,8 +1,8 @@
 package airportCheckIn;
 
 import java.awt.event.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+//import java.awt.event.ActionEvent;
+//import java.awt.event.ActionListener;
 
 
 
@@ -15,28 +15,25 @@ public class AirportController
 	{
 		airport = a;
 		view = v;
-		view.addProceedCIDListener(new ProcessCIDController());
+		view.addProceedCIDListener(new ProceedCIDController());
 	}
 		
     
-    public class ProcessCIDController implements ActionListener
+    public class ProceedCIDController implements ActionListener
     {
         public void actionPerformed(ActionEvent e) 
-        { System.out.println("Start");
+        { 
+        	System.out.println("\nProceed Button in GUI has been clicked -> Starting Simulation");
         	view.disableProceedButton();
     		Thread thread = new Thread (airport);
-    		System.out.println("Starting");
     		thread.start();
-    		System.out.println("Starting");
+    		    		
     		//view.updateCurrentItem(i.getItemReport());
-
-
-    			//auction.processNextBid();
-    			//view.setAfterProcessing();
-    		//view.display(auction.getItemReport());
-
-    		//if (auction.isFinished() )
-    			//view.setAfterProcessing();
+    		//airport.processNextBid();
+    		//view.setAfterProcessing();
+    		//view.display(airport.getItemReport());
+    		//if (airport.isFinished() )
+   			//view.setAfterProcessing();
         }
     }
 

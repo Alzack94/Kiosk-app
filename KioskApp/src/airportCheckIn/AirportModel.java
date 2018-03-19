@@ -21,8 +21,9 @@ public class AirportModel extends Observable implements  Runnable
 	private boolean finished = false; 		//Boolean finished is true when time is up, check-in desks close & flights depart
 	private CheckInDeskList cidList;		//The list of CheckIn Desks 
 	private Thread [] cidThreads;			//Threads for handling CheckIn Desks
+	@SuppressWarnings("unused")
 	private AirportGUIView view;			//The GUI class - View under MVC pattern
-	private static int num=2;
+	private static int numDesks=2;
 	/**
 	 * Constructor to creates list of customers
 	 */
@@ -34,19 +35,21 @@ public class AirportModel extends Observable implements  Runnable
 		cidList = new CheckInDeskList();
 		
 		readFile("FlightFile.csv","Flight");
-		System.out.println("\nFlights file done.\n");
+		System.out.println("\nFILE for Flights have been read.");
 		
 		readFile("PaxBookingFile.csv","PaxBooking");
-		System.out.println("\nCheckIns file done.\n");
+		System.out.println("\nFILE for Passenger Bookings has been read.\n");
 		
-		for (int i=1; i <=2; i++)	//To add in CheckIn Desk Objects in List
-		{System.out.println("Starting Queue");
+		for (int i=1; i <=2; i++)	//To add in two initial CheckIn Desk Objects in List
+		{
 			CheckInDesk c = new CheckInDesk (i, this);
 			cidList.add(c);
+			System.out.println("Created & Added CheckInDesk Object "+i+" to List of CheckIn Desks.");
 		}
 	}
 	
 	/**
+	 * STAGE-1
 	 * Method to print a report of all the check-ins (only after all check-ins have been completed)
 	 */
 	public void generateReport()
@@ -415,7 +418,7 @@ public class AirportModel extends Observable implements  Runnable
 			try
 			{
 				if(bRef.equals(c.getPassenger().getBookingRef()))
-				{ls.CheckedIn(c.getPassenger(),a);
+				{ls.logCheckedIn(c.getPassenger(),a);
 					if(c.getCheckedIn())	//If the passenger has already completed the check-in
 					throw new AlreadyCheckedInException(bRef);
 				}
@@ -456,7 +459,7 @@ public class AirportModel extends Observable implements  Runnable
 				}
 
 				if(bRef.equals(c.getPassenger().getBookingRef()))
-				{ls.CheckedIn(c.getPassenger(),1);
+				{ls.logCheckedIn(c.getPassenger(),1);
 					c.setCheckedIn(true);
 					//Set baggage dimensions that were entered through GUI
 					c.getBaggage().setBagBreadth(b);
@@ -477,7 +480,7 @@ public class AirportModel extends Observable implements  Runnable
 	//Use for printing list of Passengers in Queue
 	public String getQ()
 	{ 
-		String report=" FULLNAME                BOOKINGREF     FLIGHTCODE  BAGGAGE-DETAILS        \n";
+		String report="FULLNAME                 BOOKINGREF     FLIGHTCODE  BAGGAGE-DETAILS        \n";
 	
 		for (CheckIn c : q) 
 		{
@@ -501,6 +504,7 @@ public class AirportModel extends Observable implements  Runnable
 			int max=f.getMaxNumOfPax();
 			double total=f.getMaxBagWeight();
 			double current=0.0;
+			@SuppressWarnings("unused")
 			int count=0;
 	
 			for(CheckIn c:chks)
@@ -545,44 +549,46 @@ public class AirportModel extends Observable implements  Runnable
 	/**
 	 * Run method() for the thread
 	 * Starts off each cThread for each CheckIn Desk
-	 * then sleeps until auction is over & finally sets variable to show auction is over
 	 */
 	public void run() 
 	{
-		System.out.println("Starting Queue Thread");
-		int count=100;
+		System.out.println("\nStarted Airport Queue Thread -> Passengers now entering queue\n");
+		int count=100;		//Count for adding passengers to the queue
 
 		cidThreads = new Thread[3];
 		for (int i = 0; i < 2; i++)
-		{System.out.println("Starting Queue thread"+Integer.toString(i));
+		{
 			cidThreads[i] = new Thread(cidList.get(i));
 			cidThreads[i].start();
 		}
 
 		while(count>=0)
 		{
-			try 
+			try
 			{
-				Thread.sleep(400);	//Sleep for 3 secs
+				Thread.sleep(400);	//A new passenger enters the queue every 0.4 secs
 				CheckIn c = addOneToQueue();
 				q.add(c);
 				if(q.size()==20)
-				{num=3;
-				System.out.println("Adding new desk");
-				CheckInDesk d = new CheckInDesk (3, this);
-				cidList.add(d);
-				cidThreads[2] = new Thread(d);
-				cidThreads[2].start();
-				System.out.println("New Desk Added");}
+				{
+					numDesks=3;
+					System.out.println("Adding new desk");
+					CheckInDesk d = new CheckInDesk (3, this);
+					cidList.add(d);
+					cidThreads[2] = new Thread(d);
+					cidThreads[2].start();
+					System.out.println("New Desk Added");
 				}
-			
+			}
 			catch (Exception e) 
 			{
-				System.out.println("Auction thread exception" + e.getStackTrace());
+				System.out.println("Airport thread exception" + e.getStackTrace());
 			}
+			
 			count--;
-		}System.out.println("Time Up");
-				
+		}
+		
+		System.out.println("Time Up");
 		System.out.println("Finishing");
 		finished = true;
 	}
@@ -594,11 +600,11 @@ public class AirportModel extends Observable implements  Runnable
 	}
 	
 
-	public synchronized CheckIn getFrontOfQueue(int a)
-	{LogSingleton ls=LogSingleton.getInstance();
+	public synchronized CheckIn getFrontOfQueue(int deskID)
+	{
+		LogSingleton ls=LogSingleton.getInstance();
 		if(q.isEmpty())
 		{
-			
 			setChanged();
 			notifyObservers();
 			clearChanged();
@@ -607,14 +613,14 @@ public class AirportModel extends Observable implements  Runnable
 		else
 		{
 			CheckIn c=q.poll();
-			ls.LeaveQueue(c.getPassenger(),a);
+			ls.logLeftQueue(c.getPassenger(),deskID);
 			setChanged();
 			notifyObservers();
 			clearChanged();
 			return c;
 		}
-	
 	}
+	
 	/**
 	 * Method to return one chosen object from the Set of CheckIns to the Queue
 	 * Used to simulate entry of passengers into the queue.
@@ -631,7 +637,7 @@ public class AirportModel extends Observable implements  Runnable
 		    {
 		    	c.setInQueue(true);	//Now passenger will be added to queue
 		    	
-		    	//Simulate Random Baggage details
+		    	//Simulate by generating Random Baggage details
 		    	//Bag Dimensions in Centimeters
 		    	double bl= (double) randomWithRange(20,100);
 		    	double bb= (double) randomWithRange(10,30);
@@ -642,12 +648,11 @@ public class AirportModel extends Observable implements  Runnable
 		    	c.setBaggage(b);	    	
 				
 		    	//Report to standard output
-				System.out.println("\n"+c.getPassenger().getPaxName().getFullName()+" has been added to the queue");
-				ls.EnterQueue(c.getPassenger());
-				//Update GUI View display
-				System.out.println("Changing display");
-				
-				
+				System.out.println("\n"+c.getPassenger().getPaxName().getFullName()+" has entered the queue of Passengers.");
+				ls.logEnterQueue(c.getPassenger());
+				setChanged();
+				notifyObservers();
+				clearChanged();
 		        return c;
 		    }
 		}
@@ -662,16 +667,15 @@ public class AirportModel extends Observable implements  Runnable
 	}
 	
 	public void addDesk()
-	{num=3;
+	{
+		numDesks=3;
 		System.out.println("Adding new desk");
 		CheckInDesk c = new CheckInDesk (3, this);
 		cidList.add(c);
-		
-		
 	}
 	
-	public int getnum()
+	public int getNumDesks()
 	{
-		return num;
+		return numDesks;
 	}
 }
