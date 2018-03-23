@@ -14,7 +14,7 @@ import java.util.*;
  */
 public class AirportModel extends Observable implements  Runnable
 {
-	
+	private int speedFactor;
 	private LinkedHashSet<CheckIn> chks;	//LinkedHashSet of all CheckIn objects
 	private TreeSet<Flight> flts;  			//TreeSet of Flight objects
 	private Queue<CheckIn> q ;				//Rolling Queue of Passengers as they arrive into Airport
@@ -23,12 +23,17 @@ public class AirportModel extends Observable implements  Runnable
 	private Thread [] cidThreads;			//Threads for handling CheckIn Desks
 	@SuppressWarnings("unused")
 	private AirportGUIView view;			//The GUI class - View under MVC pattern
-	private static int numDesks=2;			//Number of CheckIn Desks
+	private static int numDesks;			//Number of CheckIn Desks
+	private int queueTime;					//queueTime is the interval between new queue additions
+
 	/**
 	 * Constructor to creates list of customers
 	 */
 	public AirportModel() 
 	{
+		speedFactor=1;
+		numDesks=2;		//numDesks=2
+		queueTime=250; 	//Initially, queue interval is 0.5 secs
 		chks = new LinkedHashSet<CheckIn>();
 		flts = new TreeSet<Flight>();
 		q = new LinkedList<CheckIn>();
@@ -43,6 +48,7 @@ public class AirportModel extends Observable implements  Runnable
 		for (int i=1; i <=2; i++)	//To add in two initial CheckIn Desk Objects in List
 		{
 			CheckInDesk c = new CheckInDesk (i, this);
+			c.changeSpeedFactor(speedFactor);
 			cidList.add(c);
 			System.out.println("Created & Added CheckInDesk Object "+i+" to List of CheckIn Desks.");
 		}
@@ -500,7 +506,7 @@ public class AirportModel extends Observable implements  Runnable
 	//Use for component to display flight status
 	public String printFlightDetails()
 	{
-		String report="FLIGHTCODE  MAXPASSENGERS  WEIGHTFILLED(%)  AIRLINENAME               DESTINATION                 \n";
+		String report="FLIGHTCODE  PASSENGERS-IN   WEIGHTFILLED(%)  AIRLINENAME               DESTINATION                 \n";
 		
 		for(Flight f: flts)
 		{
@@ -525,7 +531,7 @@ public class AirportModel extends Observable implements  Runnable
 				
 			double perc=(current/total)*100;
 			report += String.format("%-12s", f.getFlightCode());
-			report += String.format("%-15d", max);
+			report += String.format("%-16s", count+" out of "+max);
 			report += String.format("%-17.2f", perc);
 			report += String.format("%-26s", f.getAirlineName() );
 			report += String.format("%-28s", f.getDestination());
@@ -569,14 +575,16 @@ public class AirportModel extends Observable implements  Runnable
 		{
 			try
 			{
-				Thread.sleep(500);	//A new passenger enters the queue every 0.5 secs
+							
+				Thread.sleep(queueTime);	//A new passenger enters the queue once every queueTime interval
 				CheckIn c = addOneToQueue();
 				q.add(c);
 				if(q.size()>=20&&numDesks!=3)	//If more than 20 passengers & only two desks, add one more desk
 				{
-					numDesks=3;
 					CheckInDesk d = new CheckInDesk (3, this);
+					d.changeSpeedFactor(speedFactor);
 					cidList.add(d);
+					numDesks=3;
 					cidThreads[2] = new Thread(d);
 					cidThreads[2].start();
 					System.out.println("New CheckIn-Desk Number 3 Added, since more than 20 passengers in queue & only 2 CheckIn Deskss");
@@ -679,5 +687,13 @@ public class AirportModel extends Observable implements  Runnable
 		return numDesks;
 	}
 	
-	
+	public void changeSpeedFactor(int f)
+	{	
+        	queueTime=f*250;
+        	speedFactor=f;  
+			for (int i = 0; i< numDesks; i++)	
+			{
+				cidList.get(i).changeSpeedFactor(speedFactor);
+			}
+	}	
 }

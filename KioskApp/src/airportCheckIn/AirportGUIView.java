@@ -5,6 +5,8 @@ package airportCheckIn;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
+
 import java.util.*;
 
 /**
@@ -29,6 +31,7 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 	JScrollPane scrollList, scrollNorth, scrollQueue, scrollFlight, scrollSouth;
 	JTextArea [] checkInDesks;
 	JTextArea displayQueue, displayFlight;
+	JSlider slider = new JSlider(JSlider.HORIZONTAL, 1, 5, 1);
 	Font myFont;
 
 
@@ -47,10 +50,10 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 		airport.addObserver(this);
 		cidList=airport.getListOfCheckInDesks();
 		numDesks=cidList.getSize();
-
+		
 		myFont=new Font (Font.SANS_SERIF,Font.PLAIN,16);	//myFont will be the main font of the GUI
 		//this.setLayout(new BorderLayout(5,5));
-		setTitle(" Sree+Suraj+Hari Airport CheckIn GUI");	//Title of Main GUI Window
+		setTitle(" Sree Suraj and Hari - Airport CheckIn GUI");	//Title of Main GUI Window
 		setLocation (20,10);								//(20,10) should be near the Top-Left Corner 
 		setDefaultCloseOperation(AirportGUIView.DO_NOTHING_ON_CLOSE);	//disable default close action
 		setupNorthPanel();
@@ -92,6 +95,17 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 
 		//The firstPanel has one buttons: a "Close" button.
 		JPanel firstPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		
+		JLabel titleLabel = new JLabel("Sreepratha Suraj and Hari - Airport CheckIn  ");
+		titleLabel.setFont(new Font (Font.SANS_SERIF,Font.ITALIC,20));
+		firstPanel.add(titleLabel);
+		proceed = new JButton("Proceed with Simulation");
+		proceed.setFont(new Font (Font.SANS_SERIF,Font.BOLD,16));
+		proceed.setBackground(Color.GREEN);
+		proceed.setForeground(Color.BLACK);
+		firstPanel.setBackground(Color.YELLOW);
+		firstPanel.add(proceed);
+		
 		close = new JButton("Close & Write Log File");
 		close.setFont(new Font (Font.SANS_SERIF,Font.BOLD,16));
 		close.setBackground(Color.RED);
@@ -100,18 +114,19 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 		firstPanel.setBackground(Color.YELLOW);
 		firstPanel.add(close);
 
-		//The titlePanel is used to display the title and a button to proceed simulation
-		JPanel titlePanel = new JPanel();		
-		JLabel titleLabel = new JLabel("Sreepratha Suraj and Hari - Airport CheckIn  ");
-		titleLabel.setFont(new Font (Font.SANS_SERIF,Font.ITALIC,20));
-		titlePanel.add(titleLabel);
-		proceed = new JButton("Proceed with Simulation");
-		proceed.setFont(new Font (Font.SANS_SERIF,Font.BOLD,16));
-		proceed.setBackground(Color.GREEN);
-		proceed.setForeground(Color.BLACK);
-		titlePanel.setBackground(Color.YELLOW);
-		titlePanel.add(proceed);
-
+		//The sliderPanel
+		JPanel sliderPanel = new JPanel();
+		JLabel sLabel = new JLabel("Slider to Alter Speed of Simulation (1: Fast, 5: Slow)  ");
+		sliderPanel.setBackground(Color.PINK);
+		sLabel.setFont(new Font (Font.SANS_SERIF,Font.PLAIN,16));
+		sliderPanel.add(sLabel);
+	    //slider.setMinorTickSpacing(0.2);
+	    slider.setMajorTickSpacing(1);
+	    slider.setPaintTicks(true);
+	    slider.setPaintLabels(true);
+	    slider.setLabelTable(slider.createStandardLabels(1));
+	    sliderPanel.add(slider);
+	    
 		//The queuePanel is used to display the queue information
 		JPanel queuePanel = new JPanel();	
 		displayQueue = new JTextArea(5,120);		//10 row cells and 80 column cells
@@ -127,7 +142,7 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 		JPanel northPanel = new JPanel();
 		northPanel.setLayout(new GridLayout(2,1));
 		topPanel.add(firstPanel);
-		topPanel.add(titlePanel);
+		topPanel.add(sliderPanel);
 		JPanel qPanel=new JPanel();
 		JLabel queueLabel = new JLabel("Queue Of Waiting Passengers");
 		qPanel.setBackground(Color.ORANGE);
@@ -139,7 +154,7 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 		scrollNorth = new JScrollPane(northPanel);
 		scrollNorth.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));	//To create a small border 
 		this.add(scrollNorth,BorderLayout.NORTH);	//add northPanel to the North position of this Frame
-
+		
 	}
 
 	/**
@@ -168,6 +183,12 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 	public void addProceedCIDListener(ActionListener al) 
 	{
 		proceed.addActionListener(al);
+	}
+	
+	public void addSliderListener(ChangeListener cl) 
+	{
+		slider.addChangeListener(cl);
+		System.out.println("Slider value at: "+ slider.getValue());
 	}
 
 	public void disableProceedButton() 

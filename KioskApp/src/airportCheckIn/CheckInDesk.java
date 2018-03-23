@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 public class CheckInDesk  implements Runnable
 {
-	private int waitTime;   		//Waiting Time 
+	private int checkInTime;   		//Processing Time at CheckIn Desk for each passenger try
 	private boolean closed;			//Boolean closed is initially false. It is later set to true, when the Check-In Desk closes.
 	private int deskID;    			//CheckIn Desk ID
 	private ArrayList<CheckIn> checkInsAtThisDesk;  //list of checkIns processed at this desk
@@ -30,7 +30,7 @@ public class CheckInDesk  implements Runnable
 		//If speed is totally variable, we don't seem to get any processing clashes or failures
 		//Setting 2 different waiting times will give some clashes as well as some variation
 		int random0to100 =(int)(Math.random() * 101);
-		waitTime = 3000 + 1000*(random0to100%2);
+		checkInTime = 2000 + 1000*(random0to100%2);
 	}
 
 	//add a CheckIn in the list of this desk to be processed
@@ -90,7 +90,7 @@ public class CheckInDesk  implements Runnable
 				if (deskID%2 == 0) //Sleep first for even-numbered Check-In Desks
 				{  
 					//Introduce variation in sleeping pattern, so CheckIns have different times
-					Thread.sleep(waitTime);
+					Thread.sleep(checkInTime);
 				}
 				
 				if(!closed)
@@ -113,12 +113,12 @@ public class CheckInDesk  implements Runnable
 				if (deskID%2 != 0) //Sleep later for odd-numbered Check-In Desks
 				{
 					//set a pause before the bid
-					Thread.sleep(waitTime);
+					Thread.sleep(checkInTime);
 				}
 			}//End of while loop for 7 passengers per CheckIn Desk
 			
-			Thread.sleep(3000);
-			System.out.println("\nCLOSING CHECK-IN DESK NUMBER "+ deskID+" since it's quota of 7 tries is over.\n");
+			Thread.sleep(2000);
+			System.out.println("\nCLOSING CHECK-IN DESK NUMBER "+ deskID+" since it's quota is over.\n");
 			closed=true;
 			FinishReport();
 			airport.Finish();
@@ -148,6 +148,11 @@ public class CheckInDesk  implements Runnable
 	
 	public void FinishReport()
 	{
-		report="\n CLOSING CHECK-IN DESK NUMBER "+deskID+"\n since it's quota of 7 tries is over.";
+		report="\n CLOSING CHECK-IN DESK NUMBER "+deskID+"\n since it's quota is over.";
+	}
+	public void changeSpeedFactor(int f)
+	{	
+		int random0to100 =(int)(Math.random() * 101);
+		checkInTime = f * (1500 + 500*(random0to100%2));
 	}
 }
