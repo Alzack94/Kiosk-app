@@ -24,8 +24,7 @@ public class AirportModel extends Observable implements  Runnable
 	@SuppressWarnings("unused")
 	private AirportGUIView view;			//The GUI class - View under MVC pattern
 	private static int numDesks;			//Number of CheckIn Desks
-	private int queueTime;		
-	private int f=1;//queueTime is the interval between new queue additions
+	private int queueTime;					//queueTime is the interval between new queue additions
 
 	/**
 	 * Constructor to creates list of customers
@@ -34,7 +33,7 @@ public class AirportModel extends Observable implements  Runnable
 	{
 		speedFactor=1;
 		numDesks=2;		//numDesks=2
-		queueTime=200; 	//Initially, queue interval is 0.5 secs
+		queueTime=50; 	//Queue interval
 		chks = new LinkedHashSet<CheckIn>();
 		flts = new TreeSet<Flight>();
 		q = new LinkedList<CheckIn>();
@@ -49,6 +48,7 @@ public class AirportModel extends Observable implements  Runnable
 		for (int i=1; i <=2; i++)	//To add in two initial CheckIn Desk Objects in List
 		{
 			CheckInDesk c = new CheckInDesk (i, this);
+			c.changeSpeedFactor(speedFactor);
 			cidList.add(c);
 			System.out.println("Created & Added CheckInDesk Object "+i+" to List of CheckIn Desks.");
 		}
@@ -506,14 +506,13 @@ public class AirportModel extends Observable implements  Runnable
 	//Use for component to display flight status
 	public String printFlightDetails()
 	{
-		String report="FLIGHTCODE  MAXPASSENGERS  WEIGHTFILLED(%)  AIRLINENAME               DESTINATION                 \n";
+		String report="FLIGHTCODE  PASSENGERS-IN   WEIGHTFILLED(%)  AIRLINENAME               DESTINATION                 \n";
 		
 		for(Flight f: flts)
 		{
 			int max=f.getMaxNumOfPax();
 			double total=f.getMaxBagWeight();
 			double current=0.0;
-			@SuppressWarnings("unused")
 			int count=0;
 	
 			for(CheckIn c:chks)
@@ -562,12 +561,11 @@ public class AirportModel extends Observable implements  Runnable
 	public void run() 
 	{
 		System.out.println("\nStarted Airport Queue Thread -> Passengers now entering queue\n");
-		int count=100;		//Count for adding 50 passengers to the queue
+		int count=50;		//Count for adding 50 passengers to the queue
 
 		cidThreads = new Thread[3];
 		for (int i = 0; i < 2; i++)	//Initially start 2 threads
 		{
-			//cidList.get(i).changeSpeedFactor(speedFactor);
 			cidThreads[i] = new Thread(cidList.get(i));
 			cidThreads[i].start();
 		}
@@ -576,16 +574,16 @@ public class AirportModel extends Observable implements  Runnable
 		{
 			try
 			{
-					queueTime=200/getF()	;
+							
 				Thread.sleep(queueTime);	//A new passenger enters the queue once every queueTime interval
 				CheckIn c = addOneToQueue();
 				q.add(c);
 				if(q.size()>=20&&numDesks!=3)	//If more than 20 passengers & only two desks, add one more desk
 				{
-					numDesks=3;
 					CheckInDesk d = new CheckInDesk (3, this);
+					d.changeSpeedFactor(speedFactor);
 					cidList.add(d);
-					//d.changeSpeedFactor(speedFactor);
+					numDesks=3;
 					cidThreads[2] = new Thread(d);
 					cidThreads[2].start();
 					System.out.println("New CheckIn-Desk Number 3 Added, since more than 20 passengers in queue & only 2 CheckIn Deskss");
@@ -688,25 +686,13 @@ public class AirportModel extends Observable implements  Runnable
 		return numDesks;
 	}
 	
-	public int getSleep()
-	{
-		return 500/getF();
-	}
-	
-	public void changeSpeedFactor(int f1)
-	{
-	
-			f=f1;
-
-			
+	public void changeSpeedFactor(int f)
+	{	
+        	queueTime=f*50;
+        	speedFactor=f;  
+			for (int i = 0; i< numDesks; i++)	
+			{
+				cidList.get(i).changeSpeedFactor(speedFactor);
+			}
 	}	
-	
-	public int getF()
-	{
-		if(f==1)
-			return 1;
-		else
-			return f;
-		
-	}
 }

@@ -53,7 +53,7 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 		
 		myFont=new Font (Font.SANS_SERIF,Font.PLAIN,16);	//myFont will be the main font of the GUI
 		//this.setLayout(new BorderLayout(5,5));
-		setTitle(" Sree+Suraj+Hari Airport CheckIn GUI");	//Title of Main GUI Window
+		setTitle(" Sreepratha Suraj and Hari - CheckIn GUI for Airport");	//Title of Main GUI Window
 		setLocation (20,10);								//(20,10) should be near the Top-Left Corner 
 		setDefaultCloseOperation(AirportGUIView.DO_NOTHING_ON_CLOSE);	//disable default close action
 		setupNorthPanel();
@@ -96,8 +96,8 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 		//The firstPanel has one buttons: a "Close" button.
 		JPanel firstPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		
-		JLabel titleLabel = new JLabel(" SHS Airport CheckIn  ");
-		titleLabel.setFont(new Font (Font.SANS_SERIF,Font.BOLD,30));
+		JLabel titleLabel = new JLabel("S H S Airport CheckIn       ");
+		titleLabel.setFont(new Font (Font.SANS_SERIF,Font.ITALIC,20));
 		firstPanel.add(titleLabel);
 		proceed = new JButton("Proceed with Simulation");
 		proceed.setFont(new Font (Font.SANS_SERIF,Font.BOLD,16));
@@ -116,7 +116,7 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 
 		//The sliderPanel
 		JPanel sliderPanel = new JPanel();
-		JLabel sLabel = new JLabel("Slider to Alter Speed of Simulation (1: Slow, 5: Fast)  ");
+		JLabel sLabel = new JLabel("Slider to Alter Speed of Simulation (1-Fast, 3-Normal, 5-Slow)  ");
 		sliderPanel.setBackground(Color.PINK);
 		sLabel.setFont(new Font (Font.SANS_SERIF,Font.PLAIN,16));
 		sliderPanel.add(sLabel);
@@ -210,7 +210,7 @@ public class AirportGUIView extends JFrame implements ActionListener, Observer
 			closeLabel= new JLabel("The Log File of all Events can be found after this GUI is closed.");
 			closeLabel.setFont(myFont);
 			closeLabel.setForeground(Color.RED);
-			JOptionPane.showMessageDialog(this,closeLabel,"GoodBye From SHS Airport!",JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(this,closeLabel,"GoodBye From S H S Airport!",JOptionPane.INFORMATION_MESSAGE);
 			setVisible(false);
 			this.dispose();
 			LogSingleton ls=LogSingleton.getInstance();
