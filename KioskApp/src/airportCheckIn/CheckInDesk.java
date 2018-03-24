@@ -30,7 +30,7 @@ public class CheckInDesk  implements Runnable
 		//If speed is totally variable, we don't seem to get any processing clashes or failures
 		//Setting 2 different waiting times will give some clashes as well as some variation
 		int random0to100 =(int)(Math.random() * 101);
-		checkInTime = 2000 + 1000*(random0to100%2);
+		checkInTime = 5000;//2000 + 1000*(random0to100%2);
 	}
 
 	//add a CheckIn in the list of this desk to be processed
@@ -83,9 +83,10 @@ public class CheckInDesk  implements Runnable
 		
 		try 
 		{
-			while (count<7) 
+			while (count<20) 
 			{
 				count++;
+				checkInTime = airport.getSleep();
 		
 				if (deskID%2 == 0) //Sleep first for even-numbered Check-In Desks
 				{  
@@ -115,10 +116,10 @@ public class CheckInDesk  implements Runnable
 					//set a pause before the bid
 					Thread.sleep(checkInTime);
 				}
-			}//End of while loop for 7 passengers per CheckIn Desk
+			}
 			
 			Thread.sleep(2000);
-			System.out.println("\nCLOSING CHECK-IN DESK NUMBER "+ deskID+" since it's quota is over.\n");
+			System.out.println("\nCLOSING CHECK-IN DESK NUMBER "+ deskID);
 			closed=true;
 			FinishReport();
 			airport.Finish();
@@ -141,14 +142,14 @@ public class CheckInDesk  implements Runnable
 		return report;
 	}
 
-	public String getReport()
+	public String getReport() 
 	{
 		return report;
 	}
 	
 	public void FinishReport()
 	{
-		report="\n CLOSING CHECK-IN DESK NUMBER "+deskID+"\n since it's quota is over.";
+		report="\n CLOSING CHECK-IN DESK NUMBER "+deskID;
 	}
 	public void changeSpeedFactor(int f)
 	{	
